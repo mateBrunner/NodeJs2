@@ -4,14 +4,239 @@
 <head>
     <!-- <script src="p5.min.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
 </head>
 
 <body onload="myOnLoad()" >
-    <p id="myP">helloka</p>
-    <button onclick="myClick()">ezt nyomd meg</button>
+    <div id="lobbyDiv" hidden=true>
+              
+        <h2>Rikiki lobby</h2>
+        <input type="text" id="newPlayerName">
+        <button onclick="join()">Belépés</button>
+        <p id="joinErrorMsg"></p>
+    
+        <h4>Belépett játékosok</h4>
+        <ul id="joinedPlayers">
+    
+        </ul>
+    
+        <button onclick="start()">START</button>
+    </div>
+    <div id="boardDiv" hidden=true>
+        <div class="board-content">
+            <div>
+                <div id="notification" >Kezdődjék a játék!</div>
+        
+                <div class="table-div">
+                    <div id="trump" class="trump-card"></div>
+        
+                    <div id="tableCards" class="card-container table-cards"></div>
+                </div>
+        
+                <h4>Kártyák listája</h4>
+                <div id="cardList" class="card-container"></div>
+        
+                <div id="licitDiv" hidden=true>
+                    <button onclick="licit()">Licitálok</button>
+                </div>
+            </div>
+            <div id="playerList">
+            </div>
+
+            <div id="player-div-etalon" class="player-div hidden-div">
+                <div class="player-div-left">
+                    <p id="hits-etalon" class="hits"></p>
+                </div>
+                <div>
+                    <!-- <p id="name-p-etalon" class="name-p player-line"></p> -->
+                    <p id="asdf" class="point-p player-line"></p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
     <script src="main.js"></script>
+
+    <style>
+        #lobbyDiv {
+            padding: 20px;
+        }
+
+        #joinErrorMsg {
+            color: red;
+        }
+
+        #boardDiv {
+            background-image: url('images/room-background.jpeg');
+            background-repeat: repeat;
+            background-size: auto 100%;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .board-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #notification {
+            width: 580px;
+            background: #fbb2554f;
+            padding: 14px 10px 4px 10px;
+            border-radius: 5px;
+            margin-left: 20px;
+            height: 30px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .table-div {
+            height: 310px;
+            width: 645px;
+            display: flex;
+            flex-direction: row;
+            background-image: url('images/table.png')
+        }
+
+        .trump-card {
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: 70px;
+            margin-right: 100px;
+        }
+
+        .table-cards {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+
+
+        .card-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .card-div {
+            box-shadow: 2px 2px 4px 1px grey;
+            display: flex;
+            flex-direction: column;
+            height: 70px;
+            width: 43px;
+            margin-right: 6px;
+            border-radius: 6px;
+            border-style: solid;
+            border-color: #c1c1c1;
+            border-width: 1px;
+            background: white;
+            position: relative;
+        }
+
+        .player-card:hover {
+            background-color: #fff9a0;
+            position: relative;
+            bottom: 5px;
+        }
+
+        .player-card:active {
+            box-shadow: 2px 2px 4px 2px dimgray;
+            right: -2px;
+            bottom: 3px;
+            position: relative;
+        }
+
+        .card-color {
+            height: 40%;
+            width: 70%;
+            margin: 2px auto 5px auto;
+            user-select: none;
+        }
+
+        .card-value {
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-family: "Lucida Console", "Courier New", SANS-SERIF;
+            font-size: 30px;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .card-text {
+            font-weight: bold;
+            position: relative;
+            bottom: 23px;
+            height: 0px;
+            margin: 0;
+            color: white;
+        }
+
+        .legalCard {
+            border-width: 2px;
+            border-color: rgb(49, 199, 49);
+            box-shadow: 2px 2px 4px 1px rgb(49, 199, 49);
+        }
+
+        .legalCard:hover {
+            background-color: lightgrey;
+            position: relative;
+            bottom: 0px;
+        }
+
+        #playerList {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-div {
+            border-radius: 5px;
+            background: #fbb255;
+            width: 200px;
+            height: 70px;
+            margin-left: 100px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .player-div-left {
+            width: 50px;
+            border-right: 2px solid #ab6319;
+        }
+
+        .player-line {
+            padding: 0px;
+            margin: 8px 0px 0px 16px;
+        }
+
+        .name-p {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .point-p {
+            font-size: 18px;
+        }
+
+        .hits {
+            font-size: 19px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            top: 3px;
+        }
+
+        .hidden-div {
+            display: none;
+        }
+
+    </style>
 </body>
 
 </html>
