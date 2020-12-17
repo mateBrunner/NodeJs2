@@ -219,14 +219,13 @@ function newCardCallback(data) {
         legalCardsCopy = legalCards;
 
         data.playerCards.forEach(c => {
-            var id = c.color + c.value;
             if (legalCardsCopy.includes(c)) {
-                $("#" + id).removeClass("illegalCard");
-                $("#" + id).addClass("legalCard");
-                $("#" + id).click(function () { playCard(c) });
+                $("#" + c.id).removeClass("illegalCard");
+                $("#" + c.id).addClass("legalCard");
+                $("#" + c.id).click(function () { playCard(c) });
             } else {
-                $("#" + id).removeClass("legalCard");
-                $("#" + id).addClass("illegalCard");
+                $("#" + c.id).removeClass("legalCard");
+                $("#" + c.id).addClass("illegalCard");
             }
         })
     }
@@ -241,7 +240,7 @@ function playCard(card) {
     $("#notification").html("");
 
     legalCardsCopy = [];
-    $("#" + card.color + card.value).remove()
+    $("#" + card.id ).remove()
 
     var elems = document.querySelectorAll(".legalCard, .illegalCard");
 
@@ -253,7 +252,8 @@ function playCard(card) {
     socket.emit('playCard', { 
         sessionId: window.localStorage.getItem('sessionId'),
         color: card.color,
-        value: card.value
+        value: card.value,
+        id: card.id
     });
     
 }
@@ -325,7 +325,7 @@ function showHitsAndDealer(players, dealerSessionId) {
 
 function createCard(card, isPlayerCard, text) {
   var div = document.createElement("DIV");
-  div.id = card.color + card.value;
+  div.id = card.id;
   div.classList.add("card-div");
   var img = document.createElement("IMG");
   img.setAttribute("src", "images/" + card.color + ".png");

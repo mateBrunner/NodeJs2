@@ -133,7 +133,7 @@ function startNextRound() {
     var cardToDraw = cardnumber[round - 1];
 
 
-    var shuffledCards = helper.getShuffledCards(10, 10);
+    var shuffledCards = helper.getShuffledCards(10, 15);
     for (let i = 0; i < players.length; i++) {
         players[i]["cards"] = shuffledCards.slice(i * cardToDraw, (i + 1) * cardToDraw);
         players[i].hits = 0;
@@ -211,7 +211,7 @@ function playCard(card) {
 
     var player = players.find(p => p.sessionId === card.sessionId);
     player.cards = 
-        player.cards.filter(c => !(c.color === card.color && c.value === card.value))
+        player.cards.filter(c => c.id != card.id)
 
     card["name"] = player.name;
     tableCards.push(card)

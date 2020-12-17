@@ -22,58 +22,58 @@ const CARDCOLOR = {
 }
 
 const CARDS = [
-    { color: CARDCOLOR.HEARTS, value: 2 },
-    { color: CARDCOLOR.HEARTS, value: 3 },
-    { color: CARDCOLOR.HEARTS, value: 4 },
-    { color: CARDCOLOR.HEARTS, value: 5 },
-    { color: CARDCOLOR.HEARTS, value: 6 },
-    { color: CARDCOLOR.HEARTS, value: 7 },
-    { color: CARDCOLOR.HEARTS, value: 8 },
-    { color: CARDCOLOR.HEARTS, value: 9 },
-    { color: CARDCOLOR.HEARTS, value: 10 },
-    { color: CARDCOLOR.HEARTS, value: 11 },
-    { color: CARDCOLOR.HEARTS, value: 12 },
-    { color: CARDCOLOR.HEARTS, value: 13 },
-    { color: CARDCOLOR.HEARTS, value: 14 },
-    { color: CARDCOLOR.SPADES, value: 2 },
-    { color: CARDCOLOR.SPADES, value: 3 },
-    { color: CARDCOLOR.SPADES, value: 4 },
-    { color: CARDCOLOR.SPADES, value: 5 },
-    { color: CARDCOLOR.SPADES, value: 6 },
-    { color: CARDCOLOR.SPADES, value: 7 },
-    { color: CARDCOLOR.SPADES, value: 8 },
-    { color: CARDCOLOR.SPADES, value: 9 },
-    { color: CARDCOLOR.SPADES, value: 10 },
-    { color: CARDCOLOR.SPADES, value: 11 },
-    { color: CARDCOLOR.SPADES, value: 12 },
-    { color: CARDCOLOR.SPADES, value: 13 },
-    { color: CARDCOLOR.SPADES, value: 14 },
-    { color: CARDCOLOR.DIAMONDS, value: 2 },
-    { color: CARDCOLOR.DIAMONDS, value: 3 },
-    { color: CARDCOLOR.DIAMONDS, value: 4 },
-    { color: CARDCOLOR.DIAMONDS, value: 5 },
-    { color: CARDCOLOR.DIAMONDS, value: 6 },
-    { color: CARDCOLOR.DIAMONDS, value: 7 },
-    { color: CARDCOLOR.DIAMONDS, value: 8 },
-    { color: CARDCOLOR.DIAMONDS, value: 9 },
-    { color: CARDCOLOR.DIAMONDS, value: 10 },
-    { color: CARDCOLOR.DIAMONDS, value: 11 },
-    { color: CARDCOLOR.DIAMONDS, value: 12 },
-    { color: CARDCOLOR.DIAMONDS, value: 13 },
-    { color: CARDCOLOR.DIAMONDS, value: 14 },
-    { color: CARDCOLOR.CLUBS, value: 2 },
-    { color: CARDCOLOR.CLUBS, value: 3 },
-    { color: CARDCOLOR.CLUBS, value: 4 },
-    { color: CARDCOLOR.CLUBS, value: 5 },
-    { color: CARDCOLOR.CLUBS, value: 6 },
-    { color: CARDCOLOR.CLUBS, value: 7 },
-    { color: CARDCOLOR.CLUBS, value: 8 },
-    { color: CARDCOLOR.CLUBS, value: 9 },
-    { color: CARDCOLOR.CLUBS, value: 10 },
-    { color: CARDCOLOR.CLUBS, value: 11 },
-    { color: CARDCOLOR.CLUBS, value: 12 },
-    { color: CARDCOLOR.CLUBS, value: 13 },
-    { color: CARDCOLOR.CLUBS, value: 14 },
+    { color: CARDCOLOR.HEARTS, value: 2, id: null },
+    { color: CARDCOLOR.HEARTS, value: 3, id: null },
+    { color: CARDCOLOR.HEARTS, value: 4, id: null },
+    { color: CARDCOLOR.HEARTS, value: 5, id: null },
+    { color: CARDCOLOR.HEARTS, value: 6, id: null },
+    { color: CARDCOLOR.HEARTS, value: 7, id: null },
+    { color: CARDCOLOR.HEARTS, value: 8, id: null },
+    { color: CARDCOLOR.HEARTS, value: 9, id: null },
+    { color: CARDCOLOR.HEARTS, value: 10, id: null },
+    { color: CARDCOLOR.HEARTS, value: 11, id: null },
+    { color: CARDCOLOR.HEARTS, value: 12, id: null },
+    { color: CARDCOLOR.HEARTS, value: 13, id: null },
+    { color: CARDCOLOR.HEARTS, value: 14, id: null },
+    { color: CARDCOLOR.SPADES, value: 2, id: null },
+    { color: CARDCOLOR.SPADES, value: 3, id: null },
+    { color: CARDCOLOR.SPADES, value: 4, id: null },
+    { color: CARDCOLOR.SPADES, value: 5, id: null },
+    { color: CARDCOLOR.SPADES, value: 6, id: null },
+    { color: CARDCOLOR.SPADES, value: 7, id: null },
+    { color: CARDCOLOR.SPADES, value: 8, id: null },
+    { color: CARDCOLOR.SPADES, value: 9, id: null },
+    { color: CARDCOLOR.SPADES, value: 10, id: null },
+    { color: CARDCOLOR.SPADES, value: 11, id: null },
+    { color: CARDCOLOR.SPADES, value: 12, id: null },
+    { color: CARDCOLOR.SPADES, value: 13, id: null },
+    { color: CARDCOLOR.SPADES, value: 14, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 2, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 3, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 4, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 5, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 6, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 7, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 8, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 9, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 10, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 11, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 12, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 13, id: null },
+    { color: CARDCOLOR.DIAMONDS, value: 14, id: null },
+    { color: CARDCOLOR.CLUBS, value: 2, id: null },
+    { color: CARDCOLOR.CLUBS, value: 3, id: null },
+    { color: CARDCOLOR.CLUBS, value: 4, id: null },
+    { color: CARDCOLOR.CLUBS, value: 5, id: null },
+    { color: CARDCOLOR.CLUBS, value: 6, id: null },
+    { color: CARDCOLOR.CLUBS, value: 7, id: null },
+    { color: CARDCOLOR.CLUBS, value: 8, id: null },
+    { color: CARDCOLOR.CLUBS, value: 9, id: null },
+    { color: CARDCOLOR.CLUBS, value: 10, id: null },
+    { color: CARDCOLOR.CLUBS, value: 11, id: null },
+    { color: CARDCOLOR.CLUBS, value: 12, id: null },
+    { color: CARDCOLOR.CLUBS, value: 13, id: null },
+    { color: CARDCOLOR.CLUBS, value: 14, id: null },
 ]
 
 const CARDNUMBER = {
@@ -86,15 +86,20 @@ const CARDNUMBER = {
 
 
 function getShuffledCards(numberOfPlayers, cardToDraw) {
-
+    
     var extraDecks = Math.floor((numberOfPlayers * cardToDraw + 1) / 52);
 
-    var deck = [...CARDS];
-    var res = deck;
+    var res = [];
 
-    //for (let i = 0; i < extraDecks; i++) {
-    //    res.push.apply(res, deck)
-    //}
+    for (let i = 0; i < extraDecks + 1; i++) {
+        for (let j = 0; j < CARDS.length; j++) {
+            res.push({
+                color: CARDS[j].color,
+                value: CARDS[j].value,
+                id: "" + CARDS[j].color + CARDS[j].value + "_" + i,
+            })
+        }
+    }
 
     for (let i = res.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
