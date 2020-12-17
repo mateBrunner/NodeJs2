@@ -22,9 +22,12 @@ function newConnection(socket) {
     socket.on('join', join);   
     socket.on('checkSession', checkSession);
     socket.on('getLobbyInfo', getLobbyInfo);
+    socket.on('getBoardInfo', getBoardInfo);
     socket.on('start', start);
     socket.on('licit', licit);
     socket.on('playCard', playCard);
+    socket.on('getNewCardData', getNewCardData);
+    socket.on('quit', quit);
 }
 
 function join(data) {
@@ -34,10 +37,7 @@ function join(data) {
 }
 
 function checkSession(data) {
-    var result = {
-        sessionId: game.checkSession(data),
-        gameStatus: game.gameStatus 
-    }
+    var result = game.checkSession(data);
     io.to(data["socketId"]).emit('checkSession', result)
 }
 
@@ -45,8 +45,12 @@ function getLobbyInfo(socketId) {
     io.to(socketId).emit('getLobbyInfo', game.getLobbyInfo());
 }
 
-function start() {
-    var gameInfo = game.start();
+function getBoardInfo(data) {
+    io.to(data.socketId).emit('getBoardInfo', game.getBoardInfo(data.sessionId));
+}
+
+function start(gameType) {
+    var gameInfo = game.start(gameType);
     io.to(basicRoom).emit('start', gameInfo);
 
     var data = game.startNextRound();
@@ -69,13 +73,21 @@ function playCard(data) {
         if (game.isTurnEnded()) {
             setTimeout(function() {
 
-                io.to(basicRoom).emit('startTurn', game.startNextTurn())
+                io.to(basicRoom).emit('endTurn', game.endTurn())
 
-                if (game.isRoundEnded()) 
-                    io.to(basicRoom).emit('startRound', game.startNextRound())
+                if (game.isRoundEnded()) {
+                    io.to(basicRoom).emit('endRound', game.endRound());
 
-                var newData = game.getNewCardData();
-                io.to(basicRoom).emit('newCard', newData);
+                    if (game.isGameEnded())
+                        io.to(basicRoom).emit('endGame');
+                    else 
+                        io.to(basicRoom).emit('startRound', game.startNextRound())
+                    
+                } else {
+                    var newData = game.getNewCardData();
+                    io.to(basicRoom).emit('newCard', newData);
+                }             
+                
 
             }, 1800);
         } else {
@@ -85,4 +97,14 @@ function playCard(data) {
         
     }
 
+}
+
+function getNewCardData(socketId) {
+    var newData = game.getNewCardData();
+    io.to(socketId).emit('newCard', newData);
+}
+
+function quit() {
+    game.quit();
+    io.to(basicRoom).emit('quit');
 }

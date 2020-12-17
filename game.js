@@ -1,10 +1,11 @@
+const { GAMESTATUS } = require("./helper");
 const helper = require("./helper");
 
 var sockets = [];
 var players = [];
 var nextPlayerDict;
 var gameStatus = helper.GAMESTATUS.LOBBY;
-var round = 1;   //leosztás száma
+var round = 0;   //leosztás száma
 var turn = 1;
 var licits = [];
 var tableCards = [];
@@ -12,6 +13,8 @@ var dealer;
 var trump;
 var lastHitSessionId;
 var playingSessionId;
+var cardnumber;
+
 
 function joinPlayer(data) {
     //if (gameStatus != helper.GAMESTATUS.LOBBY)
@@ -31,22 +34,48 @@ function joinPlayer(data) {
 }
 
 function checkSession(data) {
+    var res = {
+        sessionId: null,
+        gameStatus: gameStatus
+    }
+
     var player = players.find(p => p.sessionId === data.sessionId)
     if (player === undefined) {
-        return null;   
+        return res;   
     }
     else {
         var socket = sockets.find(s => s.sessionId === data.sessionId)
         socket.socketId = data.socketId;
     }
-    return data.sessionId;
+
+    res.sessionId = data.sessionId;
+    
+    return res;
 }
 
 function getLobbyInfo() {
-    return players.map( p => p.name );
+    return players;
 }
 
-function start() {
+function getBoardInfo(sessionId) {
+    var res = {
+        players: players,
+        tableCards: tableCards,
+        trump: trump,
+        turns: cardnumber[round - 1],
+        shouldLicit: false,
+    }
+
+    if (sessionId === null)
+        return res;
+
+    if (licits.length != players.length && licits.find(l => l.sessionId === sessionId) === undefined)
+        res.shouldLicit = true;
+
+    return res;
+}
+
+function start(gameType) {
 
     if (gameStatus === helper.GAMESTATUS.GAME) {
         console.log("game is already in progress");
@@ -58,6 +87,8 @@ function start() {
         player.points = 0;
     });
     round = 0;
+    console.log(gameType);
+    cardnumber = helper.CARDNUMBER[gameType];
 
     nextPlayerDict = new Object();
     for (let i = 0; i < players.length - 1; i++) {
@@ -65,33 +96,50 @@ function start() {
     }
     nextPlayerDict[players[players.length - 1].sessionId] = players[0].sessionId;
 
-    console.log(JSON.stringify(nextPlayerDict));
     return players;
 }
 
 function isRoundEnded() {
+    if (turn <= cardnumber[round-1])
+        return false;
+    return true;
+   
+}
 
+function endRound() {
+    players.forEach(p => {
+
+        var gainedPoints;
+        if (p.licit === p.hits)
+            gainedPoints = 10 + p.licit * 2;
+        else
+            gainedPoints = -2 * Math.abs(p.licit - p.hits);
+
+        p.points += gainedPoints;
+    });
+    return players;
 }
 
 function startNextRound() {
-    //TODO: mozgatni a roundot
-    round = 8;
+    round += 1;
     //TODO: mozgatni a dealert
     turn = 1;
-    dealer = players[0];
+    dealer = players[round % players.length];
     licits = [];
     tableCards = [];
     var shuffledCards = helper.getShuffledCards();
-    for (let i = 0; i < players.length; i++ ) {
-        players[i]["cards"] = shuffledCards.slice(i * round, (i + 1) * round );
+    for (let i = 0; i < players.length; i++) {
+        players[i]["cards"] = shuffledCards.slice(i * cardnumber[round - 1], (i + 1) * cardnumber[round - 1]);
         players[i].hits = 0;
+        players[i].licit = 0;
         helper.orderCards(players[i]["cards"]);
     }
-    trump = shuffledCards[players.length * round]
+    trump = shuffledCards[players.length * cardnumber[round - 1]];
     return {
-        dealer: dealer,
+        dealerSessionId: dealer.sessionId,
         trump: trump,
-        players: players
+        players: players,
+        turns: cardnumber[round - 1]
     };
 }
 
@@ -113,7 +161,7 @@ function isTurnEnded() {
     return tableCards.length === players.length;
 }
 
-function startNextTurn() {
+function endTurn() {
     lastHitSessionId = getLastHitSessionId();
     players.find(p => p.sessionId === lastHitSessionId).hits += 1;
     tableCards = [];
@@ -147,6 +195,10 @@ function getNewCardData() {
     return data;
 }
 
+function isGameEnded() {
+    return round === cardnumber.length;
+}
+
 function playCard(card) {
     if (card.sessionId != playingSessionId )
         return null;
@@ -155,6 +207,7 @@ function playCard(card) {
     player.cards = 
         player.cards.filter(c => !(c.color === card.color && c.value === card.value))
 
+    card["name"] = player.name;
     tableCards.push(card)
 
     return tableCards;
@@ -171,17 +224,27 @@ function getLastHitSessionId() {
     return maxCard.sessionId;
 }
 
+function quit() {
+    gameStatus = GAMESTATUS.LOBBY;
+    players = [];
+    sockets = [];
+}
+
 module.exports = { 
     joinPlayer, 
     checkSession, 
     getLobbyInfo,
+    getBoardInfo,
     start, 
     startNextRound,
-    startNextTurn,
+    isRoundEnded,
+    endRound,
+    isTurnEnded,
+    endTurn,
     saveLicit,
     getNewCardData,
     playCard,
-    isTurnEnded,
-    isRoundEnded,
-    gameStatus 
+    gameStatus,
+    isGameEnded,
+    quit
 };
