@@ -86,6 +86,8 @@ function startGame(gameType) {
     if (players.length === 0)
         return null;
 
+    players = helper.shuffleArray(players);
+
     gameStatus = helper.GAMESTATUS.GAME;
     players.forEach(player => {
         player.points = 0;

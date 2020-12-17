@@ -84,7 +84,6 @@ const CARDNUMBER = {
     "UP_AND_DOWN_MAX": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 }
 
-
 function getShuffledCards(numberOfPlayers, cardToDraw) {
     
     var extraDecks = Math.floor((numberOfPlayers * cardToDraw + 1) / 52);
@@ -101,11 +100,16 @@ function getShuffledCards(numberOfPlayers, cardToDraw) {
         }
     }
 
-    for (let i = res.length - 1; i > 0; i--) {
+    return shuffleArray(res);
+
+}
+
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [res[i], res[j]] = [res[j], res[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return res;
+    return arr;
 }
 
 function orderCards(cards) {
@@ -122,4 +126,5 @@ module.exports = {
     CARDNUMBER,
     getShuffledCards, 
     generateSessionId, 
-    orderCards };
+    orderCards,
+    shuffleArray };
