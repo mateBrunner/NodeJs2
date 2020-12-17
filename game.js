@@ -62,6 +62,7 @@ function getBoardInfo(sessionId) {
         players: players,
         tableCards: tableCards,
         trump: trump,
+        dealerSessionId: dealer.sessionId,
         turns: cardnumber[round - 1],
         shouldLicit: false,
     }
@@ -75,19 +76,21 @@ function getBoardInfo(sessionId) {
     return res;
 }
 
-function start(gameType) {
+function startGame(gameType) {
 
     if (gameStatus === helper.GAMESTATUS.GAME) {
         console.log("game is already in progress");
-        return null;
+        return helper.GAMESTATUS.GAME;
     }
+
+    if (players.length === 0)
+        return null;
 
     gameStatus = helper.GAMESTATUS.GAME;
     players.forEach(player => {
         player.points = 0;
     });
     round = 0;
-    console.log(gameType);
     cardnumber = helper.CARDNUMBER[gameType];
 
     nextPlayerDict = new Object();
@@ -127,19 +130,22 @@ function startNextRound() {
     dealer = players[round % players.length];
     licits = [];
     tableCards = [];
-    var shuffledCards = helper.getShuffledCards();
+    var cardToDraw = cardnumber[round - 1];
+
+
+    var shuffledCards = helper.getShuffledCards(10, 10);
     for (let i = 0; i < players.length; i++) {
-        players[i]["cards"] = shuffledCards.slice(i * cardnumber[round - 1], (i + 1) * cardnumber[round - 1]);
+        players[i]["cards"] = shuffledCards.slice(i * cardToDraw, (i + 1) * cardToDraw);
         players[i].hits = 0;
         players[i].licit = 0;
         helper.orderCards(players[i]["cards"]);
     }
-    trump = shuffledCards[players.length * cardnumber[round - 1]];
+    trump = shuffledCards[players.length * cardToDraw];
     return {
         dealerSessionId: dealer.sessionId,
         trump: trump,
         players: players,
-        turns: cardnumber[round - 1]
+        turns: cardToDraw
     };
 }
 
@@ -214,12 +220,13 @@ function playCard(card) {
 }
 
 function getLastHitSessionId() {
+    //tableCards = [{ color: "D", value: 5, sessionId: 1 }, { color: "D", value: 5, sessionId: 2 }]
+
     var erosek = tableCards.filter(c => c.color === trump.color);
     if (erosek.length === 0)
         erosek = tableCards.filter(c => c.color === tableCards[0].color);
 
     maxCard = erosek.reduce((p, c) => p.value > c.value ? p : c);
-    console.log(JSON.stringify(maxCard));
 
     return maxCard.sessionId;
 }
@@ -235,7 +242,7 @@ module.exports = {
     checkSession, 
     getLobbyInfo,
     getBoardInfo,
-    start, 
+    startGame, 
     startNextRound,
     isRoundEnded,
     endRound,

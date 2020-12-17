@@ -1,4 +1,3 @@
-var counter = 0;
 
 function generateSessionId() {
     var result           = '';
@@ -78,17 +77,25 @@ const CARDS = [
 ]
 
 const CARDNUMBER = {
-    "DEMO": [1, 3, 1],
+    "DEMO": [10, 3, 1],
     "UP_TO_10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     "DOWN_FROM_10": [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
     "UP_AND_DOWN_10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
     "UP_AND_DOWN_MAX": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-
 }
 
 
-function getShuffledCards() {
-    var res = [...CARDS];
+function getShuffledCards(numberOfPlayers, cardToDraw) {
+
+    var extraDecks = Math.floor((numberOfPlayers * cardToDraw + 1) / 52);
+
+    var deck = [...CARDS];
+    var res = deck;
+
+    //for (let i = 0; i < extraDecks; i++) {
+    //    res.push.apply(res, deck)
+    //}
+
     for (let i = res.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [res[i], res[j]] = [res[j], res[i]];

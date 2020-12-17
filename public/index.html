@@ -15,7 +15,7 @@
         <h2 class="title">RIKIKI</h2>
         <div class="input-container">
             <input type="text" id="newPlayerName" class="new-player-input">
-            <button id="joinBtn" onclick="join()">Belépés</button>
+            <button class="button-primary join-btn" onclick="join()">Belépés</button>
             <p id="joinErrorMsg"></p>
         </div>
         <div class="joined-players-div">
@@ -31,7 +31,7 @@
                 <option value="UP_AND_DOWN_10">1 -> 10 -> 1</option>
                 <option value="UP_AND_DOWN_MAX">1 -> max -> 1</option>
             </select>
-            <button class="startBtn" onclick="start()">Start</button>
+            <button class="startBtn" onclick="startGame()">Start</button>
         </div>
         
     </div>
@@ -57,7 +57,7 @@
                         <div id="licit10" class="licit-number" onclick="licitSelect(10)">10</div>
                         <div id="licit11" class="licit-number" onclick="licitSelect(11)">11</div>
                         <div id="licit12" class="licit-number" onclick="licitSelect(12)">12</div>
-                        <button onclick="licit()" class="button-primary">Licitálok</button>
+                        <button onclick="licit()" class="button-primary licit-btn">Licitálok</button>
                     </div>
 
                     <div id="tableCards" class="card-container table-cards"></div>
@@ -88,10 +88,28 @@
     <style>
 
         .button-primary {
-            background: #4c23f3;
-            border-radius: 3px;
-            cursor: pointer;
+            background: #3852b3;
+            border: none;
+            border-radius: 5px;
             color: white;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .button-primary:hover {
+            background: #0f2b92;
+        }
+
+        .join-btn {
+            width: 100px;
+            height: 33px;
+            margin-left: 20px;
+        }
+
+        .join-btn:active {
+            background: #caae60;
         }
 
         #game-types {
@@ -104,7 +122,7 @@
             background: white;
             margin: 0px auto;
             border-radius: 15px;
-            box-shadow: 2px 2px 5px 2px #caac65;
+            box-shadow: 2px 2px 5px 2px #12790f;
             height: 400px;
             width: 400px;
             position: relative;
@@ -112,7 +130,7 @@
         }
 
         .title {
-            color: #845113;
+            color: #12790f;
             text-align: center;
             border-width: 0px 0px 2px 0px;
             border-style: solid;
@@ -166,7 +184,7 @@
             margin-left: auto;
             margin-right: auto;
             border-style: solid;
-            border-color: #845113;
+            border-color: #12790f;
             padding-bottom: 10px;
         }
 
@@ -196,14 +214,25 @@
         }
 
         .startBtn {
-            color: white;
-            background-color: green;
-            font-size: 22px;
-            font-weight: bold;
+            background-color: #12790f;
+            border: none;
             border-radius: 5px;
-            WIDTH: 200px;
-            HEIGHT: 40px;
-            cursor: pointer
+            color: white;
+            padding: 12px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            height: 40px;
+            width: 200px;
+        }
+
+        .startBtn:hover {
+            background-color: #0a4808
+        }
+
+        .startBtn:active {
+            background-color: #0a4808;
         }
 
         #boardDiv {            
@@ -219,7 +248,7 @@
 
         #notification {
             width: 580px;
-            background: #a5a500c7;
+            background: #0eea0782;
             padding: 14px 10px 4px 10px;
             border-radius: 5px;
             margin-left: 20px;
@@ -243,7 +272,7 @@
             margin-top: auto;
             margin-bottom: auto;
             margin-left: 70px;
-            margin-right: 100px;
+            margin-right: 60px;
         }
 
         .table-cards {
@@ -263,7 +292,7 @@
             flex-direction: column;
             height: 70px;
             width: 43px;
-            margin-right: 6px;
+            margin-right: 12px;
             border-radius: 6px;
             border-style: solid;
             border-color: #c1c1c1;
@@ -313,11 +342,11 @@
 
         .legalCard {
             border-width: 3px;
-            border-color: rgb(49, 199, 49);
+            border-color: #25a521;
         }
 
         .legalCard:hover {
-            box-shadow: 2px 2px 4px 1px rgb(49, 199, 49);
+            box-shadow: 2px 2px 4px 1px #25a521;
             position: relative;
             bottom: 5px;
         }
@@ -333,7 +362,7 @@
 
         .player-div {
             border-radius: 5px;
-            background: #a5a500c7;
+            background: #0eea0782;
             width: 200px;
             height: 70px;
             margin-left: 100px;
@@ -344,7 +373,7 @@
 
         .player-div-left {
             width: 50px;
-            border-right: 2px solid #7a820c;
+            border-right: 2px solid #004c02;
         }
 
         .player-line {
@@ -378,14 +407,13 @@
             flex-direction: row;
             margin-top: auto;
             margin-bottom: auto;
-            margin-left: -70px;
         }
 
         .licit-number {
             color: black;
             align-content: center;
             margin-right: 3px;
-            background: #d6d600;
+            background: #ffbc00;
             height: 20px;
             width: 20px;
             border-radius: 3px;
@@ -405,7 +433,11 @@
 
         .selected-licit {
             border-width: 2px;
-            border-color: red;
+            border-color: #980000;
+        }
+
+        .licit-btn {
+            margin-left: 15px;
         }
 
         #quitBtn {
@@ -414,8 +446,7 @@
             top: 10px;
         }
 
-        .red {
-            color: #c10000;
+        .underlined {
             text-decoration: underline;
         }
 

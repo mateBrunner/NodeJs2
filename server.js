@@ -23,7 +23,7 @@ function newConnection(socket) {
     socket.on('checkSession', checkSession);
     socket.on('getLobbyInfo', getLobbyInfo);
     socket.on('getBoardInfo', getBoardInfo);
-    socket.on('start', start);
+    socket.on('startGame', startGame);
     socket.on('licit', licit);
     socket.on('playCard', playCard);
     socket.on('getNewCardData', getNewCardData);
@@ -33,7 +33,7 @@ function newConnection(socket) {
 function join(data) {
     var player = game.joinPlayer(data);
     io.to(basicRoom).emit('join', player);
-    io.to(data.socketId).emit('joinWithSession', player)
+    io.to(data.socketId).emit('joinWithSession', player) //ebből tudjuk egyelőre, mit mentünk localStorage-ba
 }
 
 function checkSession(data) {
@@ -41,17 +41,20 @@ function checkSession(data) {
     io.to(data["socketId"]).emit('checkSession', result)
 }
 
-function getLobbyInfo(socketId) {
-    io.to(socketId).emit('getLobbyInfo', game.getLobbyInfo());
+function getLobbyInfo(data) {
+    io.to(data.socketId).emit('getLobbyInfo', game.getLobbyInfo());
 }
 
 function getBoardInfo(data) {
     io.to(data.socketId).emit('getBoardInfo', game.getBoardInfo(data.sessionId));
 }
 
-function start(gameType) {
-    var gameInfo = game.start(gameType);
-    io.to(basicRoom).emit('start', gameInfo);
+function startGame(gameType) {
+    var gameInfo = game.startGame(gameType);
+    if ( gameInfo === null )
+        return;
+
+    io.to(basicRoom).emit('startGame', gameInfo);
 
     var data = game.startNextRound();
     io.to(basicRoom).emit('startRound', data)

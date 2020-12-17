@@ -1,6 +1,4 @@
 var socket;
-var socketId;
-var cards;
 var legalCardsCopy = [];
 
 function myOnLoad() {
@@ -9,50 +7,46 @@ function myOnLoad() {
     socket.on('join', joinCallback)
     socket.on('joinWithSession', joinWithSessionCallback)
     socket.on('checkSession', checkSessionCallback)
-    socket.on('start', startCallback)
+    socket.on('startGame', startGameCallback)
     socket.on('startRound', startRoundCallback)
-    socket.on('endTurn', endTurnCallback)
-    socket.on('licitEnd', licitEnd)
     socket.on('endRound', endRoundCallback)
+    socket.on('endTurn', endTurnCallback)
+    socket.on('licitEnd', licitEnd)    
     socket.on('showTableCards', showTableCardsCallback)
     socket.on('newCard', newCardCallback)
     socket.on('quit', quitCallback)
     socket.on('getLobbyInfo', getLobbyInfoCallback)
     socket.on('getBoardInfo', getBoardInfoCallback)
-    console.log('feliratkozás megtörtént')
 
-  socket.on("connect", () => {
-    socketId = socket.id;
-    checkSession();
-  });
+    socket.on("connect", () => {
+        checkSession();
+    });
 }
 
 function checkSession() {
-  var sessionId = window.localStorage.getItem('sessionId') 
-  var data = {
-    "sessionId": sessionId,
-    "socketId": socket.id
-  }
-  socket.emit('checkSession', data);
+    var sessionId = window.localStorage.getItem('sessionId') 
+    var data = {
+        "sessionId": sessionId,
+        "socketId": socket.id
+    }
+    socket.emit('checkSession', data);
 }
 
 function checkSessionCallback(result) {
-    if (result.sessionId === null) {
+    if (result.sessionId === null)  // ez a sessionId nincs játékban, töröljük a storage-ból
         window.localStorage.removeItem('sessionId');
-    } else {
+    else
         window.localStorage.setItem('sessionId', result.sessionId);
-    }
 
-    //hogy hivatkozunk külső js fájlt????
+    var data = {
+        sessionId: window.localStorage.getItem('sessionId'),
+        socketId: socket.id
+    }
     if (result.gameStatus == "lobby") {
         showLobby();
-        socket.emit('getLobbyInfo', socket.id);
+        socket.emit('getLobbyInfo', data);
     } else if (result.gameStatus == "game") {
-        showBoard();
-        var data = {
-            sessionId: window.localStorage.getItem('sessionId'),
-            socketId: socket.id
-        }
+        showBoard();        
         socket.emit('getBoardInfo', data);
     }
 
@@ -63,11 +57,12 @@ function showLobby() {
     $("#boardDiv").addClass("hidden-div");
 }
 
-function getLobbyInfoCallback(data) {
+function getLobbyInfoCallback(players) {
+    
     $("joinedPlayers").empty();
-    data.forEach(player => {
+    players.forEach(player => {
         $("#joinedPlayers").append(createLobbyPlayer(player));
-  });
+    });
 }
 
 function showBoard() {
@@ -77,136 +72,87 @@ function showBoard() {
 
 function getBoardInfoCallback(data) {
 
-    $("#playerList").empty();
-    data.players.forEach(p => {
-        $("#playerList").append(createPlayerDiv(p));
-    });
+    showPlayerList(data.players);
 
-    $("#tableCards").empty();
-    data.tableCards.forEach(c => {
-        $("#tableCards").append(createCard(c, false, c.name));
-    });
+    showTableCardsCallback(data.tableCards);
 
-    $("#trump").html(createCard(data.trump, false, "adu"));
+    showTrumpAndPlayerCards(data);
 
-    var sessionId = window.localStorage.getItem("sessionId");
-    if (sessionId != null) {
-        cards = data.players.find(p => p["sessionId"] == sessionId).cards;
-        $("#cardList").empty();
-        cards.forEach(c => {
-            $("#cardList").append(createCard(c, true, null));
-        })
-    }
+    showHitsAndDealer(data.players, data.dealerSessionId);
 
-    if (data.shouldLicit) {
-        //licitDiv mutatása
-        $("#notification").html("LICITÁLÁS");
-        $("#licitDiv").removeClass("hidden-div")
-        var elems = document.querySelectorAll(".selected-licit");
-
-        elems.forEach(e => {
-            e.classList.remove("selected-licit");
+    if (data.shouldLicit)
+        showLicitDiv(data.turns);
+    else {
+        data.players.forEach(p => {
+            $("#hits-" + p.sessionId).html("" + p.hits + " / " + p.licit);
         })
 
-        for (let i = 0; i <= 12; i++) {
-            if (i <= data.turns)
-                $("#licit" + i).removeClass("hidden-div")
-            else
-                $("#licit" + i).addClass("hidden-div")
-        }
-    } else {
         socket.emit('getNewCardData', socket.id);
     }
+        
+
 }
 
 function join() {
-  var name = document.getElementById("newPlayerName").value;
-  if (name == "") {
-    $("#joinErrorMsg").text("Név nem megfelelő")
-    return;
-  }
+    var name = $("#newPlayerName").val();
+
+    if (name === "") {
+        $("#joinErrorMsg").text("Név nem megfelelő")
+        return;
+    } else
+        $("#joinErrorMsg").text("");
 
     var data = { name: name, socketId: socket.id }
 
-  if (window.localStorage.getItem('sessionId') === null) {
-    socket.emit('join', data);
-  }
-  else 
-    $("#joinErrorMsg").text("Te már beléptél, nyughass!")
+    if (window.localStorage.getItem('sessionId') === null)
+        socket.emit('join', data);
+    else 
+        $("#joinErrorMsg").text("Te már beléptél, nyughass!")
 }
 
 function joinCallback(player) {
-  //$("#joinedPlayers").append($("<li>").html(player.name));
-    console.log("join");
     $("#joinedPlayers").append(createLobbyPlayer(player));
  
 }
 
 function joinWithSessionCallback(player) {
-  window.localStorage.setItem('sessionId', player.sessionId)
+    window.localStorage.setItem('sessionId', player.sessionId)
 }
 
-function start() {
+function startGame() {
     var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
-    if (res === "bölény")
-    var val = $("#game-types :selected").val();
-    socket.emit('start', val);
+    if (res === "eper") {
+        var val = $("#game-types :selected").val();
+        socket.emit('startGame', val);
+    }    
 }
 
-function startCallback(data) {
-  if (data === null) {
-    console.log("már megy a játék")
-    return;
-  }
+function startGameCallback(players) {
+    //TODO - ez nem szép
+    if (players === null) {
+        console.log("már megy a játék")
+        return;
+    }
 
-  showBoard();
-  $("#playerList").empty();
-  data.forEach(p => {
-    $("#playerList").append(createPlayerDiv(p));
-  });
+    showBoard();
+
+    showPlayerList(players);
 }
 
 function startRoundCallback(data) {
-    var sessionId = window.localStorage.getItem('sessionId') 
-    console.log("start round")
 
-    //kártyák és adu mutatása
-    cards = data.players.find(p => p["sessionId"] == sessionId).cards;
-    $("#cardList").empty();
-    cards.forEach(c => {
-    $("#cardList").append(createCard(c, true, null));
-    })
-    $("#trump").html(createCard(data.trump, false, "adu"));
+    showTrumpAndPlayerCards(data);
 
-    //licitDiv mutatása
-    $("#notification").html("LICITÁLÁS");
-    $("#licitDiv").removeClass("hidden-div")
-    var elems = document.querySelectorAll(".selected-licit");
+    showLicitDiv(data.turns);
 
-    elems.forEach(e => {
-        e.classList.remove("selected-licit");
-    })
-
-    for (let i = 0; i <= 12; i++) {
-        if (i <= data.turns)
-            $("#licit" + i).removeClass("hidden-div")
-        else
-            $("#licit" + i).addClass("hidden-div")
-    }
-
-    data.players.forEach(p => {
-        $("#hits-" + p.sessionId).html("");
-    })
-
-    $("#player-name-" + data.dealerSessionId).addClass("red");
+    showHitsAndDealer(data.players, data.dealerSessionId);
 }
 
 function endRoundCallback(players) {
     players.forEach(p => {
         $("#player-points-" + p.sessionId).html(p.points);
-        $("#player-name-" + p.sessionId).removeClass("red");
+        $("#player-name-" + p.sessionId).removeClass("underlined");
     });
-    console.log("endRound");
 }
 
 function endTurnCallback(players) {
@@ -241,65 +187,60 @@ function licit() {
 }
 
 function licitEnd(licits) {
-  $("#notification").html("LICIT VÉGE")
-
-  licits.forEach(p => {
-    $("#hits-" + p.sessionId).html("0 / " + p.licit);
-  })
+    licits.forEach(p => {
+        $("#hits-" + p.sessionId).html("0 / " + p.licit);
+    })
 }
 
 function showTableCardsCallback(tableCards) {
-  $("#tableCards").empty();
-  tableCards.forEach(c => {
-    $("#tableCards").append(createCard(c, false, c.name));
-  });
+    $("#tableCards").empty();
+    tableCards.forEach(c => {
+        $("#tableCards").append(createCard(c, false, c.name));
+    });
 }
 
 function newCardCallback(data) {
-  $("#notification").html(data.name + " lapot játszik ki");
+    $("#notification").html(data.name + " lapot játszik ki");
 
-  if (data.tableCards.length === 0)
-    $("#tableCards").empty();
+    if (data.tableCards.length === 0)
+        $("#tableCards").empty();
 
-  if (data.sessionId === window.localStorage.getItem('sessionId')) {
-    //get legal cards 
-    var legalCards;
-    if (data.tableCards.length === 0) {
-      legalCards = data.playerCards;
+    if (data.sessionId === window.localStorage.getItem('sessionId')) {
+
+        var legalCards;
+
+        if (data.tableCards.length === 0)
+            legalCards = data.playerCards;
+        else {
+            legalCards = data.playerCards.filter(c => c.color === data.tableCards[0].color);
+            if (legalCards.length === 0)
+                legalCards = data.playerCards;
+        }
+        legalCardsCopy = legalCards;
+
+        data.playerCards.forEach(c => {
+            var id = c.color + c.value;
+            if (legalCardsCopy.includes(c)) {
+                $("#" + id).removeClass("illegalCard");
+                $("#" + id).addClass("legalCard");
+                $("#" + id).click(function () { playCard(c) });
+            } else {
+                $("#" + id).removeClass("legalCard");
+                $("#" + id).addClass("illegalCard");
+            }
+        })
     }
-    else {
-      legalCards = data.playerCards.filter(c => c.color === data.tableCards[0].color);
-      if (legalCards.length === 0)
-        legalCards = data.playerCards;
-    }
-      legalCardsCopy = legalCards;
-
-      data.playerCards.forEach(c => {
-          var id = c.color + c.value;
-          if (legalCardsCopy.includes(c)) {
-              $("#" + id).removeClass("illegalCard");
-              $("#" + id).addClass("legalCard");
-              $("#" + id).click(function () { playCard(c) });
-          } else {
-              $("#" + id).removeClass("legalCard");
-              $("#" + id).addClass("illegalCard");
-          }
-    })
-  }
 
 }
 
 
 function playCard(card) {
-  if (!legalCardsCopy.includes(card))
-    return;
+    if (!legalCardsCopy.includes(card))
+        return;
 
-  legalCardsCopy.forEach(c => {
-    var id = c.color + c.value;
-    $("#" + id).removeClass("legalCard");
-  })
+    $("#notification").html("");
 
-  legalCardsCopy = [];
+    legalCardsCopy = [];
     $("#" + card.color + card.value).remove()
 
     var elems = document.querySelectorAll(".legalCard, .illegalCard");
@@ -309,11 +250,11 @@ function playCard(card) {
         e.classList.remove("illegalCard");
     })
 
-  socket.emit('playCard', { 
-    sessionId: window.localStorage.getItem('sessionId'),
-    color: card.color,
-    value: card.value
-  });
+    socket.emit('playCard', { 
+        sessionId: window.localStorage.getItem('sessionId'),
+        color: card.color,
+        value: card.value
+    });
     
 }
 
@@ -326,6 +267,58 @@ function quit() {
 function quitCallback() {
     window.localStorage.removeItem('sessionId');
     location.reload();
+}
+
+function showPlayerList(players) {
+    $("#playerList").empty();
+    players.forEach(p => {
+        $("#playerList").append(createPlayerDiv(p));
+    });
+}
+
+function showLicitDiv(numberOfTurns) {
+    $("#notification").html("LICITÁLÁS");
+
+    if (window.localStorage.getItem("sessionId") === null)
+        return;
+
+    $("#licitDiv").removeClass("hidden-div")
+
+    var elems = document.querySelectorAll(".selected-licit");
+    elems.forEach(e => {
+        e.classList.remove("selected-licit");
+    })
+
+    //TODO - megcsinálni nem beégetett buttonökkel
+    for (let i = 0; i <= 12; i++) {
+        if (i <= numberOfTurns)
+            $("#licit" + i).removeClass("hidden-div")
+        else
+            $("#licit" + i).addClass("hidden-div")
+    }
+}
+
+function showTrumpAndPlayerCards(data) {
+    $("#trump").html(createCard(data.trump, false, "adu"));
+
+    var sessionId = window.localStorage.getItem('sessionId')
+    if (sessionId === null)
+        return;
+
+    //kártyák és adu mutatása
+    var cards = data.players.find(p => p["sessionId"] == sessionId).cards;
+    $("#cardList").empty();
+    cards.forEach(c => {
+        $("#cardList").append(createCard(c, true, null));
+    })
+}
+
+function showHitsAndDealer(players, dealerSessionId) {
+    players.forEach(p => {
+        $("#hits-" + p.sessionId).html("");
+    })
+
+    $("#player-name-" + dealerSessionId).addClass("underlined");
 }
 
 
