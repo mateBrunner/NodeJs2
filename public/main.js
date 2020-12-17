@@ -120,7 +120,7 @@ function joinWithSessionCallback(player) {
 }
 
 function startGame() {
-    var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
+    var res = window.prompt("Start", "Nem úgy van az! Add meg a jelszót!");
     if (res === "eper") {
         var val = $("#game-types :selected").val();
         socket.emit('startGame', val);
@@ -200,7 +200,12 @@ function showTableCardsCallback(tableCards) {
 }
 
 function newCardCallback(data) {
-    $("#notification").html(data.name + " lapot játszik ki");
+    $("#notification").html("<span style='color: #ffbc00; font-weight: bold;'>" + data.name + "</span> lapot játszik ki");
+
+
+    var elems = document.querySelectorAll(".selected-left");
+    elems.forEach(e => e.classList.remove("selected-left"));
+    $("#player-left-" + data.sessionId).addClass("selected-left");    
 
     if (data.tableCards.length === 0)
         $("#tableCards").empty();
@@ -321,8 +326,6 @@ function showHitsAndDealer(players, dealerSessionId) {
     $("#player-name-" + dealerSessionId).addClass("underlined");
 }
 
-
-
 function createCard(card, isPlayerCard, text) {
   var div = document.createElement("DIV");
   div.id = card.id;
@@ -368,6 +371,7 @@ function createPlayerDiv(player) {
   divMain.classList.add("player-div");
   var divLeft = document.createElement("DIV");
   divLeft.classList.add("player-div-left");
+  divLeft.id = "player-left-" + player.sessionId;
   var pHits = document.createElement("p");
   var nodeHits = document.createTextNode("");
   if (player.licits === null)
