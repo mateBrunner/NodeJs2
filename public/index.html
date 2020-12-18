@@ -5,14 +5,16 @@
     <!-- <script src="p5.min.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
 </head>
 
-<body onload="myOnLoad()" >
-    <div id="lobbyDiv">
-              
+<body onload="myOnLoad()">
+    <div w3-include-html id="lobbyDiv">
+
         <h2 class="title">RIKIKI</h2>
+        <game-card id="test-game-card" type="ezatype"></game-card>
         <div class="input-container">
             <input type="text" id="newPlayerName" class="new-player-input">
             <button class="button-primary join-btn" onclick="join()">Belépés</button>
@@ -21,8 +23,8 @@
         <div class="joined-players-div">
             <h4 class="joined-players-title">Belépett játékosok</h4>
             <div id="joinedPlayers" class="joined-players-body"></div>
-        </div>       
-        
+        </div>
+
         <div id="start-button-div">
             <select name="game-types-select" id="game-types">
                 <option value="DEMO" selected="selected">1 -> 3</option>
@@ -33,13 +35,13 @@
             </select>
             <button class="startBtn" onclick="startGame()">Start</button>
         </div>
-        
+
     </div>
     <div id="boardDiv" class="hidden-div">
         <div class="board-content">
             <div>
                 <div id="notification"></div>
-        
+
                 <div class="table-div">
                     <div id="trump" class="trump-card"></div>
 
@@ -62,9 +64,9 @@
 
                     <div id="tableCards" class="card-container table-cards"></div>
                 </div>
-        
+
                 <div id="cardList" class="card-container"></div>
-        
+
             </div>
             <div id="playerList">
             </div>
@@ -78,12 +80,13 @@
                     <p id="asdf" class="point-p player-line"></p>
                 </div>
             </div>
-            
+
         </div>
         <button id="quitBtn" class="button-primary" onclick="quit()">Kilépés</button>
     </div>
 
     <script src="main.js"></script>
+    <script src="components/game-card.js"></script>
 
     <style>
 
@@ -98,9 +101,9 @@
             font-size: 16px;
         }
 
-        .button-primary:hover {
-            background: #0f2b92;
-        }
+            .button-primary:hover {
+                background: #0f2b92;
+            }
 
         .join-btn {
             width: 100px;
@@ -108,9 +111,9 @@
             margin-left: 20px;
         }
 
-        .join-btn:active {
-            background: #caae60;
-        }
+            .join-btn:active {
+                background: #caae60;
+            }
 
         #game-types {
             width: 120px;
@@ -197,7 +200,7 @@
 
         .lobby-player {
             width: 50px;
-            height: 30px;            
+            height: 30px;
             margin: 12px 20px;
         }
 
@@ -227,15 +230,15 @@
             width: 200px;
         }
 
-        .startBtn:hover {
-            background-color: #0a4808
-        }
+            .startBtn:hover {
+                background-color: #0a4808
+            }
 
-        .startBtn:active {
-            background-color: #0a4808;
-        }
+            .startBtn:active {
+                background-color: #0a4808;
+            }
 
-        #boardDiv {            
+        #boardDiv {
             height: 100vh;
             width: 100vw;
         }
@@ -345,11 +348,11 @@
             border-color: #25a521;
         }
 
-        .legalCard:hover {
-            box-shadow: 2px 2px 4px 1px #25a521;
-            position: relative;
-            bottom: 5px;
-        }
+            .legalCard:hover {
+                box-shadow: 2px 2px 4px 1px #25a521;
+                position: relative;
+                bottom: 5px;
+            }
 
         .illegalCard {
             background-color: lightgrey;
@@ -427,9 +430,9 @@
             user-select: none;
         }
 
-        .licit-number:hover {
-            cursor: pointer;
-        }
+            .licit-number:hover {
+                cursor: pointer;
+            }
 
         .selected-licit {
             border-width: 2px;
@@ -449,7 +452,6 @@
         .underlined {
             text-decoration: underline;
         }
-
     </style>
 </body>
 

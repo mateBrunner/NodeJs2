@@ -120,11 +120,14 @@ function joinWithSessionCallback(player) {
 }
 
 function startGame() {
-    var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
-    if (res === "eper") {
-        var val = $("#game-types :selected").val();
-        socket.emit('startGame', val);
-    }    
+    $("#test-game-card").attr("type", "alma");
+    $("#test-game-card").attr("type", "eper");
+
+    //var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
+    //if (res === "eper") {
+    //    var val = $("#game-types :selected").val();
+    //    socket.emit('startGame', val);
+    //}    
 }
 
 function startGameCallback(players) {
