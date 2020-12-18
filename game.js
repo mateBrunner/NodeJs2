@@ -86,6 +86,8 @@ function startGame(gameType) {
     if (players.length === 0)
         return null;
 
+    players = helper.shuffleArray(players);
+
     gameStatus = helper.GAMESTATUS.GAME;
     players.forEach(player => {
         player.points = 0;
@@ -132,8 +134,7 @@ function startNextRound() {
     tableCards = [];
     var cardToDraw = cardnumber[round - 1];
 
-
-    var shuffledCards = helper.getShuffledCards(10, 15);
+    var shuffledCards = helper.getShuffledCards(players.length, cardToDraw);
     for (let i = 0; i < players.length; i++) {
         players[i]["cards"] = shuffledCards.slice(i * cardToDraw, (i + 1) * cardToDraw);
         players[i].hits = 0;
