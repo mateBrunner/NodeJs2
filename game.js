@@ -191,8 +191,13 @@ function getNewCardData() {
     playingSessionId = startingSessionId;
     var player = players.find(p => p.sessionId === startingSessionId);
 
+    var lastCardSessionId = null;
+    if (tableCards.length > 0)
+        lastCardSessionId = tableCards[tableCards.length - 1]["sessionId"];
+
     var data = {
         sessionId: startingSessionId,
+        lastCardSessionId: lastCardSessionId,
         name: player.name,
         trumpcolor: trump,
         playerCards: player.cards,

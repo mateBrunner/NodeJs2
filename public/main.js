@@ -84,7 +84,7 @@ function getBoardInfoCallback(data) {
         showLicitDiv(data.turns);
     else {
         data.players.forEach(p => {
-            $("#hits-" + p.sessionId).html("" + p.hits + " / " + p.licit);
+            $("#player_" + p.sessionId).attr("hits", "" + p.hits + " / " + p.licit)
         })
 
         socket.emit('getNewCardData', socket.id);
@@ -150,14 +150,14 @@ function startRoundCallback(data) {
 
 function endRoundCallback(players) {
     players.forEach(p => {
-        $("#player-points-" + p.sessionId).html(p.points);
-        $("#player-name-" + p.sessionId).removeClass("underlined");
+        $("#player_" + p.sessionId).attr("points", p.points);
+        $("#player_" + p.sessionId).attr("dealer", "false");
     });
 }
 
 function endTurnCallback(players) {
     players.forEach(p => {
-        $("#hits-" + p.sessionId).html("" + p.hits + " / " + p.licit);
+        $("#player_" + p.sessionId).attr("hits", "" + p.hits + " / " + p.licit);
     })
     $("#tableCards").empty();
 }
@@ -188,7 +188,7 @@ function licit() {
 
 function licitEnd(licits) {
     licits.forEach(p => {
-        $("#hits-" + p.sessionId).html("0 / " + p.licit);
+        $("#player_" + p.sessionId).attr("0 / " + p.licit);
     })
 }
 
@@ -202,10 +202,8 @@ function showTableCardsCallback(tableCards) {
 function newCardCallback(data) {
     $("#notification").html("<span style='color: #ffbc00; font-weight: bold;'>" + data.name + "</span> lapot játszik ki");
 
-
-    var elems = document.querySelectorAll(".selected-left");
-    elems.forEach(e => e.classList.remove("selected-left"));
-    $("#player-left-" + data.sessionId).addClass("selected-left");    
+    $("#player_" + data.sessionId).attr("is-loading", "true");
+    $("#player_" + data.lastCardSessionId).attr("is-loading", "false");
 
     if (data.tableCards.length === 0)
         $("#tableCards").empty();
@@ -244,6 +242,10 @@ function playCard(card) {
 
     legalCardsCopy = [];
     $("#" + card.id ).remove()
+
+    $("#cardList").children().each((element, c) => 
+        c.setAttribute("status", "player-card")
+    );
 
     var elems = document.querySelectorAll(".is-legal");
 
@@ -317,14 +319,14 @@ function showTrumpAndPlayerCards(data) {
 
 function showHitsAndDealer(players, dealerSessionId) {
     players.forEach(p => {
-        $("#hits-" + p.sessionId).html("");
+        $("#player_" + dealerSessionId).attr("hits", "");
     })
 
-    $("#player-name-" + dealerSessionId).addClass("underlined");
+    $("#player_" + dealerSessionId).attr("is-dealer", "true");
 }
 
 function createCard(card, isPlayerCard, text) {
-    var dom = document.createElement("game-card", "asdf");
+    var dom = document.createElement("game-card");
     dom.id = card.id;
     dom.setAttribute("color", card.color);
     dom.setAttribute("value", card.value);
@@ -350,38 +352,10 @@ function getCardValueText(val) {
 }
 
 function createPlayerDiv(player) {
-  var divMain = document.createElement("DIV");
-  divMain.classList.add("player-div");
-  var divLeft = document.createElement("DIV");
-  divLeft.classList.add("player-div-left");
-  divLeft.id = "player-left-" + player.sessionId;
-  var pHits = document.createElement("p");
-  var nodeHits = document.createTextNode("");
-  if (player.licits === null)
-    nodeHits = document.createTextNode("" + player.hits + " / " + player.licit);
-  pHits.appendChild(nodeHits);
-  pHits.classList.add("hits");
-  pHits.id = "hits-" + player.sessionId;
-  divLeft.appendChild(pHits);
-
-  var divRight = document.createElement("DIV");
-  var pName = document.createElement("p");
-  var nodeName = document.createTextNode(player.name);
-  pName.appendChild(nodeName);
-  pName.classList.add("name-p");
-    pName.classList.add("player-line");
-    pName.id = "player-name-" + player.sessionId;
-  divRight.appendChild(pName);
-  var pPoint = document.createElement("p");
-  var nodePoint = document.createTextNode(player.points);
-  pPoint.appendChild(nodePoint);
-  pPoint.classList.add("point-p");
-    pPoint.classList.add("player-line");
-    pPoint.id = "player-points-" + player.sessionId;
-  divRight.appendChild(pPoint);
-
-  divMain.appendChild(divLeft);
-  divMain.appendChild(divRight);
+    var divMain = document.createElement("player-box");
+    divMain.id = "player_" + player.sessionId;
+    divMain.setAttribute("name", player.name);
+    divMain.setAttribute("points", player.points);
 
   return divMain;  
 }

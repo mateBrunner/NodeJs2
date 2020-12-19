@@ -1,0 +1,77 @@
+<div class="full-div">
+    <div class="left-side">
+        <div class="img-container">
+            <img src="images/cards.gif" class="hidden">
+        </div>
+        <p class="hits"></p>
+    </div>
+    <div class="right-side">
+        <p class="name-p"></p>
+        <p class="point-p"></p>
+    </div>
+</div> 
+
+<style>
+
+    .full-div {
+        border-radius: 5px;
+        background: #0eea0782;
+        width: 200px;
+        height: 70px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .left-side {
+        width: 50px;
+        border-right: 2px solid #004c02;
+        border-radius: 5px 0px 0px 5px;
+    }
+
+    .img-container {
+        height: 38px;
+    }
+
+    img {
+        height: 23px;
+        margin: 5px 15px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .left-side .selected {
+        background-color: #ffbc00;
+    }
+
+    .right-side {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .name-p {
+        margin: 6px 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .point-p {
+        font-size: 18px;
+        margin: 4px 10px 3px 10px;
+    }
+
+    .hits {
+        font-size: 19px;
+        text-align: center;
+        font-weight: bold;
+        margin: auto;
+    }
+
+    .underlined {
+        text-decoration: underline;
+    }
+
+
+</style>

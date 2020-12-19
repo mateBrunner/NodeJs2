@@ -64,7 +64,7 @@
                     <div id="tableCards" class="card-container table-cards"></div>
                 </div>
 
-                <div id="cardList" class="card-container"></div>
+                <div id="cardList" class="card-container player-cards"></div>
 
             </div>
             <div id="playerList">
@@ -85,6 +85,7 @@
     </div>
 
     <script src="main.js"></script>
+    <script src="components/player-box.js"></script>
     <script src="components/game-card.js"></script>
 
     <style>
@@ -100,9 +101,9 @@
             font-size: 16px;
         }
 
-            .button-primary:hover {
-                background: #0f2b92;
-            }
+        .button-primary:hover {
+            background: #0f2b92;
+        }
 
         .join-btn {
             width: 100px;
@@ -291,52 +292,24 @@
             flex-direction: row;
         }
 
+        .card-container.player-cards {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 150px;
+            padding-top: 16px;
+            padding-left: 16px;
+            background: #e2e2e23b;
+            box-shadow: 0px 0px 2px 2px #60606b;
+        }
+
         #playerList {
             display: flex;
             flex-direction: column;
         }
 
-        .player-div {
-            border-radius: 5px;
-            background: #0eea0782;
-            width: 200px;
-            height: 70px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: row;
-        }
-
-        .player-div-left {
-            width: 50px;
-            border-right: 2px solid #004c02;
-            border-radius: 5px 0px 0px 5px;
-        }
-
-        .player-div-left.selected-left {
-            background-color: #ffbc00;
-        }
-
-        .player-line {
-            padding: 0px;
-            margin: 8px 0px 0px 16px;
-        }
-
-        .name-p {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .point-p {
-            font-size: 18px;
-        }
-
-        .hits {
-            font-size: 19px;
-            text-align: center;
-            font-weight: bold;
-            position: relative;
-            top: 3px;
-        }
+        
 
         .hidden-div {
             display: none !important;
@@ -385,9 +358,7 @@
             top: 10px;
         }
 
-        .underlined {
-            text-decoration: underline;
-        }
+        
     </style>
 </body>
 
