@@ -1,0 +1,105 @@
+﻿<div class="full-div">
+    <div class="card-info"></div>
+    <div class=card-div>
+        <img class="card-color">
+        <p class="card-value"></p>
+    </div>
+</div>
+
+<style>
+    
+    .full-div {
+        width: 40px;
+        margin-right: 12px;
+    }
+
+    .full-div.player-card {
+        width: 66px;
+    }
+
+    .card-info {
+        background-color: transparent;
+        overflow: hidden;
+        height: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        background: transparent;
+        color: white;
+    }
+
+    .card-div {
+        display: flex;
+        flex-direction: column;
+        height: 60px;
+        width: inherit;
+        border-radius: 6px;
+        border-style: solid;
+        border-color: #c1c1c1;
+        border-width: 1px;
+        background: white;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .player-card .card-div {
+        height: 100px;
+    }
+
+    .player-card:hover {
+        cursor: pointer;
+    }
+
+    .player-card:active {
+        box-shadow: 2px 2px 4px 2px dimgray;
+        right: -2px;
+        bottom: 3px;
+        position: relative;
+    }
+
+    .card-info {
+        background-color: transparent;
+    }
+
+    .card-color {
+        height: 50%;
+        width: 70%;
+        margin: 2px auto 5px auto;
+        user-select: none;
+    }
+
+    .card-value {
+        margin: auto;
+        font-family: "Lucida Console", "Courier New", SANS-SERIF;
+        font-size: 140%;
+        user-select: none;
+    }
+
+    .player-card .card-value {
+        font-size: 36px !important;
+    }
+
+    .card-text {
+        font-weight: bold;
+        position: relative;
+        bottom: 23px;
+        height: 0px;
+        margin: 0;
+        color: white;
+    }
+
+    .legal .card-div {
+        border-width: 2px;
+        border-color: #25a521;
+    }
+
+    .legal .card-div:hover {
+        box-shadow: 2px 2px 4px 1px #25a521;
+        position: relative;
+        bottom: 5px;
+    }
+
+    .illegal {
+        background-color: lightgrey;
+    }
+
+</style>

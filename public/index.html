@@ -14,7 +14,6 @@
     <div w3-include-html id="lobbyDiv">
 
         <h2 class="title">RIKIKI</h2>
-        <game-card id="test-game-card" type="ezatype"></game-card>
         <div class="input-container">
             <input type="text" id="newPlayerName" class="new-player-input">
             <button class="button-primary join-btn" onclick="join()">Belépés</button>
@@ -39,7 +38,7 @@
     </div>
     <div id="boardDiv" class="hidden-div">
         <div class="board-content">
-            <div>
+            <div class="board-left-side">
                 <div id="notification"></div>
 
                 <div class="table-div">
@@ -230,13 +229,13 @@
             width: 200px;
         }
 
-            .startBtn:hover {
-                background-color: #0a4808
-            }
+        .startBtn:hover {
+            background-color: #0a4808
+        }
 
-            .startBtn:active {
-                background-color: #0a4808;
-            }
+        .startBtn:active {
+            background-color: #0a4808;
+        }
 
         #boardDiv {
             height: 100vh;
@@ -247,6 +246,10 @@
             padding: 20px;
             display: flex;
             flex-direction: row;
+        }
+
+        .board-left-side {
+            width: 780px;
         }
 
         #notification {
@@ -283,79 +286,9 @@
             margin-bottom: auto;
         }
 
-
-
         .card-container {
             display: flex;
             flex-direction: row;
-        }
-
-        .card-div {
-            display: flex;
-            flex-direction: column;
-            height: 70px;
-            width: 43px;
-            margin-right: 12px;
-            border-radius: 6px;
-            border-style: solid;
-            border-color: #c1c1c1;
-            border-width: 1px;
-            background: white;
-            position: relative;
-        }
-
-        .player-card:hover {
-            background-color: #fff9a0;
-            cursor: pointer;
-        }
-
-        .player-card:active {
-            box-shadow: 2px 2px 4px 2px dimgray;
-            right: -2px;
-            bottom: 3px;
-            position: relative;
-        }
-
-        .card-color {
-            height: 40%;
-            width: 70%;
-            margin: 2px auto 5px auto;
-            user-select: none;
-        }
-
-        .card-value {
-            margin-right: auto;
-            margin-left: auto;
-            margin-top: 0px;
-            margin-bottom: 0px;
-            font-family: "Lucida Console", "Courier New", SANS-SERIF;
-            font-size: 30px;
-            font-weight: bold;
-            user-select: none;
-        }
-
-        .card-text {
-            font-weight: bold;
-            position: relative;
-            bottom: 23px;
-            height: 0px;
-            margin: 0;
-            color: white;
-        }
-
-        .legalCard {
-            border-width: 3px;
-            border-color: #25a521;
-        }
-
-            .legalCard:hover {
-                box-shadow: 2px 2px 4px 1px #25a521;
-                position: relative;
-                bottom: 5px;
-            }
-
-        .illegalCard {
-            background-color: lightgrey;
         }
 
         #playerList {
@@ -368,7 +301,6 @@
             background: #0eea0782;
             width: 200px;
             height: 70px;
-            margin-left: 100px;
             margin-bottom: 20px;
             display: flex;
             flex-direction: row;

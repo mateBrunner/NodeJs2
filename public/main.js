@@ -120,22 +120,11 @@ function joinWithSessionCallback(player) {
 }
 
 function startGame() {
-<<<<<<< HEAD
-    $("#test-game-card").attr("type", "alma");
-    $("#test-game-card").attr("type", "eper");
-
     //var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
     //if (res === "eper") {
-    //    var val = $("#game-types :selected").val();
-    //    socket.emit('startGame', val);
-    //}    
-=======
-    var res = window.prompt("Start", "Nem úgy van az! Add meg a jelszót!");
-    if (res === "eper") {
         var val = $("#game-types :selected").val();
         socket.emit('startGame', val);
-    }    
->>>>>>> bd153066ef65c3d78505f5f4d235b8d7feeca0a3
+    //}    
 }
 
 function startGameCallback(players) {
@@ -236,12 +225,10 @@ function newCardCallback(data) {
 
         data.playerCards.forEach(c => {
             if (legalCardsCopy.includes(c)) {
-                $("#" + c.id).removeClass("illegalCard");
-                $("#" + c.id).addClass("legalCard");
+                $("#" + c.id).attr("status", "legal");
                 $("#" + c.id).click(function () { playCard(c) });
             } else {
-                $("#" + c.id).removeClass("legalCard");
-                $("#" + c.id).addClass("illegalCard");
+                $("#" + c.id).attr("status", "illegal");
             }
         })
     }
@@ -258,11 +245,10 @@ function playCard(card) {
     legalCardsCopy = [];
     $("#" + card.id ).remove()
 
-    var elems = document.querySelectorAll(".legalCard, .illegalCard");
+    var elems = document.querySelectorAll(".is-legal");
 
     elems.forEach(e => {
-        e.classList.remove("legalCard");
-        e.classList.remove("illegalCard");
+        e.classList.remove("is-legal");
     })
 
     socket.emit('playCard', { 
@@ -338,33 +324,19 @@ function showHitsAndDealer(players, dealerSessionId) {
 }
 
 function createCard(card, isPlayerCard, text) {
-  var div = document.createElement("DIV");
-  div.id = card.id;
-  div.classList.add("card-div");
-  var img = document.createElement("IMG");
-  img.setAttribute("src", "images/" + card.color + ".png");
-  img.classList.add("card-color");
-  var p = document.createElement("p");
-  var node = document.createTextNode(getCardValueText(card.value));
-  p.appendChild(node);
-  p.classList.add("card-value");
+    var dom = document.createElement("game-card", "asdf");
+    dom.id = card.id;
+    dom.setAttribute("color", card.color);
+    dom.setAttribute("value", card.value);
 
-  if (isPlayerCard)
-    div.classList.add("player-card");
+    if (text != null)
+        dom.setAttribute("card-info", text);
 
+    if (isPlayerCard)
+        dom.setAttribute("status", "player-card");
+
+    return dom;
   
-  if (text != null) {
-    var pText = document.createElement("p");
-    var nodeText = document.createTextNode(text);
-    pText.appendChild(nodeText);
-    pText.classList.add("card-text");
-    div.appendChild(pText);
-  }
-  
-  div.appendChild(img);
-  div.appendChild(p);
-  div.appendChild(p);
-  return div; 
 }
 
 function getCardValueText(val) {
