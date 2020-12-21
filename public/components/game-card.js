@@ -19,7 +19,7 @@ class GameCard extends HTMLElement {
         if (name === "color")
             this.shadowRoot.querySelector(".card-color").setAttribute("src", "images/" + newValue + ".png");
         else if (name === "value")
-            this.shadowRoot.querySelector(".card-value").innerHTML = newValue;
+            this.shadowRoot.querySelector(".card-value").innerHTML = this.getCardValueText(newValue);
         else if (name === "card-info")
             this.shadowRoot.querySelector(".card-info").innerHTML = newValue;
         else if (name === "status")
@@ -37,6 +37,16 @@ class GameCard extends HTMLElement {
             } 
 
     }
+
+    getCardValueText(val) {
+    switch (val) {
+        case "11": return "J";
+        case "12": return "Q";
+        case "13": return "K";
+        case "14": return "A";
+        default: return val;
+    }
+}
 }
 
 customElements.define('game-card', GameCard);

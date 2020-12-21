@@ -1,4 +1,5 @@
 var socket;
+var playerSessions;
 var legalCardsCopy = [];
 
 function myOnLoad() {
@@ -6,12 +7,14 @@ function myOnLoad() {
   
     socket.on('join', joinCallback)
     socket.on('joinWithSession', joinWithSessionCallback)
+    socket.on('joinError', joinErrorCallback)
     socket.on('checkSession', checkSessionCallback)
     socket.on('startGame', startGameCallback)
     socket.on('startRound', startRoundCallback)
     socket.on('endRound', endRoundCallback)
+    socket.on('someoneLicited', someoneLicitedCallback)
     socket.on('endTurn', endTurnCallback)
-    socket.on('licitEnd', licitEnd)    
+    socket.on('licitEnd', licitEndCallback)    
     socket.on('showTableCards', showTableCardsCallback)
     socket.on('newCard', newCardCallback)
     socket.on('quit', quitCallback)
@@ -110,6 +113,10 @@ function join() {
         $("#joinErrorMsg").text("Te már beléptél, nyughass!")
 }
 
+function joinErrorCallback() {
+    $("#joinErrorMsg").text("Van már ilyen nevű játékos!")
+}
+
 function joinCallback(player) {
     $("#joinedPlayers").append(createLobbyPlayer(player));
  
@@ -134,12 +141,16 @@ function startGameCallback(players) {
         return;
     }
 
+    playerSessions = players.map(p => p.sessionId);
+
     showBoard();
 
     showPlayerList(players);
 }
 
 function startRoundCallback(data) {
+
+    $("#round-counter").html(data.round + ". kör / " + data.turns + " lap");
 
     showTrumpAndPlayerCards(data);
 
@@ -186,9 +197,13 @@ function licit() {
     socket.emit('licit', data);
 }
 
-function licitEnd(licits) {
+function someoneLicitedCallback(sessionId) {
+    $("#player_" + sessionId).attr("is-loading", "false");
+}
+
+function licitEndCallback(licits) {
     licits.forEach(p => {
-        $("#player_" + p.sessionId).attr("0 / " + p.licit);
+        $("#player_" + p.sessionId).attr("hits", "0 / " + p.licit);
     })
 }
 
@@ -283,6 +298,8 @@ function showPlayerList(players) {
 function showLicitDiv(numberOfTurns) {
     $("#notification").html("LICITÁLÁS");
 
+    playerSessions.forEach(s => $("#player_" + s).attr("is-loading", "true"));
+
     if (window.localStorage.getItem("sessionId") === null)
         return;
 
@@ -339,16 +356,6 @@ function createCard(card, isPlayerCard, text) {
 
     return dom;
   
-}
-
-function getCardValueText(val) {
-  switch(val) {
-    case 11: return "J";
-    case 12: return "Q";
-    case 13: return "K";
-    case 14: return "A";
-    default: return val;
-  }
 }
 
 function createPlayerDiv(player) {

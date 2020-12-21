@@ -31,9 +31,15 @@ function newConnection(socket) {
 }
 
 function join(data) {
-    var player = game.joinPlayer(data);
-    io.to(basicRoom).emit('join', player);
-    io.to(data.socketId).emit('joinWithSession', player) //ebből tudjuk egyelőre, mit mentünk localStorage-ba
+    var result = game.joinPlayer(data);
+    //később lehet beletenni mást az error-ba
+    if (result === "error")
+        io.to(data.socketId).emit('joinError');
+    else {
+        io.to(basicRoom).emit('join', result);
+        io.to(data.socketId).emit('joinWithSession', result) //ebből tudjuk egyelőre, mit mentünk localStorage-ba
+    }
+
 }
 
 function checkSession(data) {
@@ -62,6 +68,7 @@ function startGame(gameType) {
 
 function licit(data) {
     var licits = game.saveLicit(data);
+    io.to(basicRoom).emit('someoneLicited', data.sessionId);
     if (licits != null) {
         io.to(basicRoom).emit('licitEnd', licits);
         var data = game.getNewCardData();

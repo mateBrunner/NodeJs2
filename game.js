@@ -20,6 +20,9 @@ function joinPlayer(data) {
     //if (gameStatus != helper.GAMESTATUS.LOBBY)
         //TODO
 
+    if (players.find(p => p.name === data.name) != undefined)
+        return "error";
+
     var player = {
         name: data.name, 
         sessionId: helper.generateSessionId(),
@@ -146,7 +149,8 @@ function startNextRound() {
         dealerSessionId: dealer.sessionId,
         trump: trump,
         players: players,
-        turns: cardToDraw
+        turns: cardToDraw,
+        round: round
     };
 }
 

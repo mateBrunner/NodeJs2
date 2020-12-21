@@ -39,7 +39,11 @@
     <div id="boardDiv" class="hidden-div">
         <div class="board-content">
             <div class="board-left-side">
-                <div id="notification" class="green-shadow"></div>
+                <div id="notification-container" class="green-shadow">
+                    <div id="round-counter"></div>
+                    <div id="notification"></div>
+                </div>
+
 
                 <div class="table-div">
                     <div id="trump" class="trump-card"></div>
@@ -106,8 +110,7 @@
 
         .button-primary:hover {
             background: #7d031a;
-            cursor: pointer;
-            
+            cursor: pointer;   
         }
 
         .join-btn {
@@ -258,7 +261,7 @@
             width: 780px;
         }
 
-        #notification {
+        #notification-container {
             width: 580px;
             background: #0eea0782;
             padding: 14px 10px 4px 10px;
@@ -269,6 +272,12 @@
             text-align: center;
             font-weight: bold;
             font-size: 18px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #notification {
+            margin: 0 auto;
         }
 
         .table-div {
