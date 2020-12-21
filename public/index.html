@@ -45,20 +45,22 @@
                     <div id="trump" class="trump-card"></div>
 
                     <div id="licitDiv" class="hidden-div">
-                        <div id="licit0" class="licit-number" onclick="licitSelect(0)">0</div>
-                        <div id="licit1" class="licit-number" onclick="licitSelect(1)">1</div>
-                        <div id="licit2" class="licit-number" onclick="licitSelect(2)">2</div>
-                        <div id="licit3" class="licit-number" onclick="licitSelect(3)">3</div>
-                        <div id="licit4" class="licit-number" onclick="licitSelect(4)">4</div>
-                        <div id="licit5" class="licit-number" onclick="licitSelect(5)">5</div>
-                        <div id="licit6" class="licit-number" onclick="licitSelect(6)">6</div>
-                        <div id="licit7" class="licit-number" onclick="licitSelect(7)">7</div>
-                        <div id="licit8" class="licit-number" onclick="licitSelect(8)">8</div>
-                        <div id="licit9" class="licit-number" onclick="licitSelect(9)">9</div>
-                        <div id="licit10" class="licit-number" onclick="licitSelect(10)">10</div>
-                        <div id="licit11" class="licit-number" onclick="licitSelect(11)">11</div>
-                        <div id="licit12" class="licit-number" onclick="licitSelect(12)">12</div>
-                        <button onclick="licit()" class="button-primary licit-btn">Licitálok</button>
+                        <div id="licit-numbers-container">
+                            <div id="licit0" class="licit-number" onclick="licitSelect(0)">0</div>
+                            <div id="licit1" class="licit-number" onclick="licitSelect(1)">1</div>
+                            <div id="licit2" class="licit-number" onclick="licitSelect(2)">2</div>
+                            <div id="licit3" class="licit-number" onclick="licitSelect(3)">3</div>
+                            <div id="licit4" class="licit-number" onclick="licitSelect(4)">4</div>
+                            <div id="licit5" class="licit-number" onclick="licitSelect(5)">5</div>
+                            <div id="licit6" class="licit-number" onclick="licitSelect(6)">6</div>
+                            <div id="licit7" class="licit-number" onclick="licitSelect(7)">7</div>
+                            <div id="licit8" class="licit-number" onclick="licitSelect(8)">8</div>
+                            <div id="licit9" class="licit-number" onclick="licitSelect(9)">9</div>
+                            <div id="licit10" class="licit-number" onclick="licitSelect(10)">10</div>
+                            <div id="licit11" class="licit-number" onclick="licitSelect(11)">11</div>
+                            <div id="licit12" class="licit-number" onclick="licitSelect(12)">12</div>
+                        </div>                        
+                        <button onclick="licit()" class="button-primary">Licitálok</button>
                     </div>
 
                     <div id="tableCards" class="card-container table-cards"></div>
@@ -91,18 +93,21 @@
     <style>
 
         .button-primary {
-            background: #3852b3;
+            background: #a2001e;
             border: none;
             border-radius: 5px;
             color: white;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 18px;
+            padding: 8px 14px;
         }
 
         .button-primary:hover {
-            background: #0f2b92;
+            background: #7d031a;
+            cursor: pointer;
+            
         }
 
         .join-btn {
@@ -111,9 +116,9 @@
             margin-left: 20px;
         }
 
-            .join-btn:active {
-                background: #caae60;
-            }
+        .join-btn:active {
+            background: #caae60;
+        }
 
         #game-types {
             width: 120px;
@@ -318,40 +323,43 @@
         }
 
         #licitDiv {
-            display: flex;
-            flex-direction: row;
             margin-top: auto;
             margin-bottom: auto;
+            width: 340px;
+
+        }
+
+        #licit-numbers-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
         }
 
         .licit-number {
             color: black;
             align-content: center;
-            margin-right: 3px;
+            margin: 0px 10px 10px 0px;
             background: #ffbc00;
-            height: 20px;
-            width: 20px;
+            height: 42px;
+            width: 42px;
             border-radius: 3px;
             border-width: 1px;
             border-color: black;
             border-style: solid;
-            font-size: 20px;
+            font-size: 30px;
             text-align: center;
-            font-weight: bold;
-            padding-bottom: 4px;
             user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-            .licit-number:hover {
-                cursor: pointer;
-            }
+        .licit-number:hover {
+            cursor: pointer;
+        }
 
         .selected-licit {
-            background-color: #980000;
-        }
-
-        .licit-btn {
-            margin-left: 15px;
+            background-color: #9a6712;
         }
 
         #quitBtn {
