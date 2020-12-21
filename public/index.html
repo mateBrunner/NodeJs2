@@ -39,7 +39,7 @@
     <div id="boardDiv" class="hidden-div">
         <div class="board-content">
             <div class="board-left-side">
-                <div id="notification"></div>
+                <div id="notification" class="green-shadow"></div>
 
                 <div class="table-div">
                     <div id="trump" class="trump-card"></div>
@@ -309,7 +309,9 @@
             flex-direction: column;
         }
 
-        
+        .green-shadow {
+        box-shadow: 0px 0px 2px 2px rgb(4, 105, 4);
+        }
 
         .hidden-div {
             display: none !important;
