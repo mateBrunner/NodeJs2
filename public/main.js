@@ -62,7 +62,6 @@ function showLobby() {
     $("#lobbyDiv").removeClass("hidden-div");
     $("#boardDiv").addClass("hidden-div");
 
-    showChart();
 }
 
 function getLobbyInfoCallback(players) {
@@ -82,11 +81,17 @@ function getBoardInfoCallback(data) {
 
     showPlayerList(data.players);
 
+    playerSessions = data.players.map(p => p.sessionId);
+
     showTableCardsCallback(data.tableCards);
 
     showTrumpAndPlayerCards(data);
 
     showHitsAndDealer(data.players, data.dealerSessionId);
+
+    $("#round-counter").html(data.round + ". kör / " + data.turns + " lap");
+
+    createChart(data);
 
     if (data.shouldLicit)
         showLicitDiv(data.turns);
@@ -98,7 +103,6 @@ function getBoardInfoCallback(data) {
         socket.emit('getNewCardData', socket.id);
     }
         
-
 }
 
 function join() {
@@ -139,18 +143,20 @@ function startGame() {
     //}    
 }
 
-function startGameCallback(players) {
+function startGameCallback(data) {
     //TODO - ez nem szép
-    if (players === null) {
+    if (data === null) {
         console.log("már megy a játék")
         return;
     }
 
-    playerSessions = players.map(p => p.sessionId);
+    playerSessions = data.players.map(p => p.sessionId);
 
     showBoard();
 
-    showPlayerList(players);
+    showPlayerList(data.players);
+
+    createChart(data);
 }
 
 function startRoundCallback(data) {
@@ -169,6 +175,13 @@ function endRoundCallback(players) {
         $("#player_" + p.sessionId).attr("points", p.points);
         $("#player_" + p.sessionId).attr("dealer", "false");
     });
+
+    for (let i = 0; i < players.length; i++) {
+        myLineChart.data.datasets[i].data.push(players[i].points);
+    }
+
+    myLineChart.update();
+
 }
 
 function endTurnCallback(result) {
@@ -235,6 +248,8 @@ function newCardCallback(data) {
 
     if (data.sessionId === window.localStorage.getItem('sessionId')) {
 
+        $("#cardList").addClass("active");
+
         var legalCards;
 
         if (data.tableCards.length === 0)
@@ -264,6 +279,7 @@ function playCard(card) {
         return;
 
     $("#notification").html("");
+    $("#cardList").removeClass("active");
 
     legalCardsCopy = [];
     $("#" + card.id ).remove()
@@ -393,39 +409,18 @@ function createLobbyPlayer(player) {
     return div;
 }
 
-function showChart() {
+function createChart(data) {
+
+    console.log(data);
 
     var ctx = document.getElementById('pointChartCanvas');
 
-    var data = [{
-        x: 10,
-        y: 20
-    }, {
-        x: 15,
-        y: 10
-    }]
-
-    var options;
+    var labels = [...Array(data.numberOfRounds + 1).keys()]
 
     myLineChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-            datasets: [{
-                label: 'Máté',
-                borderColor: "red",
-                data: [
-                    1, 2, 3, 4, 5, 6
-                ],
-                fill: false,
-            }, {
-                label: 'Sanyi',
-                fill: false,
-                borderColor: "blue",
-                data: [
-                    3, 4, 5, 6, 7, 8
-                ],
-            }]
+            labels: labels
         },
         options: {
             responsive: true,
@@ -441,7 +436,7 @@ function showChart() {
             },
             hover: {
                 mode: 'nearest',
-                intersect: true
+                intersect: false
             },
             scales: {
                 x: {
@@ -460,7 +455,28 @@ function showChart() {
                 }
             }
         }
-
     });
+
+    myLineChart.data.datasets = [];
+
+    data.players.forEach(p => {
+        myLineChart.data.datasets.push({
+                label: p.name,
+                borderColor: p.color,
+                data: [0],
+                lineTension: 0,
+                fill: false,
+            })
+    });
+
+    if (data.hasOwnProperty('pointHistory')) {
+        for (let i = 0; i < data.pointHistory.length; i++) {
+            for (let j = 0; j < data.players.length; j++) {
+                myLineChart.data.datasets[j].data.push(data.pointHistory[i][j]);
+            }
+        }
+    }
+
+    myLineChart.update();
 
 }

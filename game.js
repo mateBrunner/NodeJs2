@@ -15,6 +15,7 @@ var lastHitSessionId;
 var lastHitCard;
 var playingSessionId;
 var cardnumber;
+var pointHistory;
 
 
 function joinPlayer(data) {
@@ -69,6 +70,9 @@ function getBoardInfo(sessionId) {
         dealerSessionId: dealer.sessionId,
         turns: cardnumber[round - 1],
         shouldLicit: false,
+        round: round,
+        numberOfRounds: cardnumber.length,
+        pointHistory: pointHistory
     }
 
     if (sessionId === null)
@@ -92,10 +96,15 @@ function startGame(gameType) {
 
     players = helper.shuffleArray(players);
 
+    pointHistory = [];
+
     gameStatus = helper.GAMESTATUS.GAME;
-    players.forEach(player => {
-        player.points = 0;
-    });
+
+    for (let i = 0; i < players.length; i++) {
+        players[i].points = 0;
+        players[i].color = helper.COLORS[i];
+    }
+
     round = 0;
     cardnumber = helper.CARDNUMBER[gameType];
 
@@ -105,7 +114,12 @@ function startGame(gameType) {
     }
     nextPlayerDict[players[players.length - 1].sessionId] = players[0].sessionId;
 
-    return players;
+    var result = {
+        players: players,
+        numberOfRounds: cardnumber.length
+    }
+
+    return result;
 }
 
 function isRoundEnded() {
@@ -116,6 +130,7 @@ function isRoundEnded() {
 }
 
 function endRound() {
+    var newPoints = [];
     players.forEach(p => {
 
         var gainedPoints;
@@ -125,7 +140,10 @@ function endRound() {
             gainedPoints = -2 * Math.abs(p.licit - p.hits);
 
         p.points += gainedPoints;
+        newPoints.push(p.points);
     });
+    pointHistory.push(newPoints);
+
     return players;
 }
 

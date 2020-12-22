@@ -43,18 +43,20 @@
 
         <div class="board-content">
             <div class="board-left-side">
-                <div id="notification-container" class="green-shadow">
-                    <div id="round-counter"></div>
-                    <div id="notification"></div>
-                </div>
 
-                <div class="chart-icon">alma
-                    <div class="pointChartCanvas">
-                        <canvas id="pointChartCanvas"></canvas>
+                <div class="notification-line">
+                    <div id="notification-container" class="green-shadow">
+                        <div id="round-counter"></div>
+                        <div id="notification"></div>
+                    </div>
+                    <div class="chart-icon green-shadow">
+                        <img src="images/chart.png" class="chart-icon-img">
+                        <div class="pointChartCanvas">
+                            <canvas id="pointChartCanvas"></canvas>
+                        </div>
                     </div>
                 </div>
-
-                
+                               
 
                 <div class="table-div">
                     <div id="trump" class="trump-card"></div>
@@ -97,15 +99,13 @@
 
     <style>
 
-        #chart_div {
-            width: 600px;
-            background-color: transparent;
-        }
+    /*#region GENERAL*/
+
 
         .button-primary {
             background: #a2001e;
             border: none;
-            border-radius: 5px;
+            border-radius: var(--main-border-radius);
             color: white;
             text-align: center;
             text-decoration: none;
@@ -119,19 +119,19 @@
             cursor: pointer;
         }
 
+    /*#endregion GENERAL*/
+
+    /*#region LOBBY*/
+
         .join-btn {
             width: 100px;
             height: 33px;
             margin-left: 20px;
         }
 
-        .join-btn:active {
-            background: #caae60;
-        }
-
         #game-types {
             width: 120px;
-            border-radius: 5px;
+            border-radius: var(--main-border-radius);
         }
 
         #lobbyDiv {
@@ -139,7 +139,7 @@
             background: white;
             margin: 0px auto;
             border-radius: 15px;
-            box-shadow: 2px 2px 5px 2px #12790f;
+            box-shadow: 0px 0px 5px 5px var(--main-green);
             height: 400px;
             width: 400px;
             position: relative;
@@ -147,7 +147,7 @@
         }
 
         .title {
-            color: #12790f;
+            color: var(--main-green);
             text-align: center;
             border-width: 0px 0px 2px 0px;
             border-style: solid;
@@ -162,15 +162,14 @@
         }
 
         .new-player-input {
-            border-radius: 5px;
+            border-radius: var(--main-border-radius);
             height: 26px;
             font-size: 20px;
         }
 
         #joinBtn {
             bottom: 1px;
-            border-radius: 5px;
-            background: #4c23f3;
+            border-radius: var(--main-border-radius);
             color: white;
             height: 33px;
             margin-left: 10px;
@@ -195,13 +194,11 @@
         .joined-players-title {
             border-width: 0px 0px 2px 0px;
             text-align: center;
-            margin-bottom: 0px;
+            margin: 24px auto 0px auto;
             font-size: 18px;
             width: 200px;
-            margin-left: auto;
-            margin-right: auto;
             border-style: solid;
-            border-color: #12790f;
+            border-color: var(--main-green);
             padding-bottom: 10px;
         }
 
@@ -231,9 +228,9 @@
         }
 
         .startBtn {
-            background-color: #12790f;
+            background-color: var(--main-green);
             border: none;
-            border-radius: 5px;
+            border-radius: var(--main-border-radius);
             color: white;
             padding: 12px 32px;
             text-align: center;
@@ -244,13 +241,13 @@
             width: 200px;
         }
 
-        .startBtn:hover {
+        .startBtn:hover, .startBtn:active {
             background-color: #0a4808
         }
 
-        .startBtn:active {
-            background-color: #0a4808;
-        }
+    /*#endregion LOBBY*/
+
+    /*#region BOARD*/
 
         #boardDiv {
             height: 100vh;
@@ -267,12 +264,16 @@
             width: 780px;
         }
 
+        .notification-line {
+            display: flex;
+            flex-direction: row;
+        }
+
         #notification-container {
-            width: 580px;
+            width: 650px;
             background: #0eea0782;
             padding: 14px 10px 4px 10px;
             border-radius: 5px;
-            margin-left: 20px;
             margin-bottom: 30px;
             height: 30px;
             text-align: center;
@@ -312,11 +313,16 @@
             flex-direction: row;
         }
 
-            .card-container.player-cards {
-                padding: 0px 0px 16px 6px;
-                background: #8a8a8a3d;
-                box-shadow: 0px 0px 10px 2px #0eea0782;
-            }
+        .card-container.player-cards {
+            padding: 0px 0px 16px 6px;
+            background: #8a8a8a3d;
+            box-shadow: 0px 0px 10px 2px #a7a7a7;
+            height: 120px;
+        }
+
+        .card-container.player-cards.active {
+            box-shadow: 0px 0px 10px 3px var(--main-green);
+        }
 
         #playerList {
             display: flex;
@@ -362,9 +368,9 @@
             align-items: center;
         }
 
-            .licit-number:hover {
-                cursor: pointer;
-            }
+        .licit-number:hover {
+            cursor: pointer;
+        }
 
         .selected-licit {
             background-color: #9a6712;
@@ -376,14 +382,36 @@
             top: 10px;
         }
 
+        #chart_div {
+            width: 600px;
+            background-color: transparent;
+        }        
+
         #pointChartCanvas {
-            background: blue;
-            width: 300px;
-            width: 400px;
+            position: absolute;
+            top: 40px;
+            left:20px;
+
+            background: white;
+            border-radius: 10px;
+            z-index: 20;
+        }
+
+        .chart-icon {
+            background: #0eea0782;
+            height: 48px;
+            width: 48px;
+            border-radius: 5px;
+            margin-left: 20px;
+        }
+
+        .chart-icon-img {
+            height: 34px;
+            width: 35px;
+            margin: 6px 0px 0px 6px;
         }
 
         .chart-icon:hover {
-            background-color: blue;
             display: block;
         }
 
@@ -393,7 +421,11 @@
 
         .pointChartCanvas {
             display: none ; 
+            height: 300px;
+            width: 700px;
         }
+
+    /*#endregion BOARD*/
 
 
     </style>

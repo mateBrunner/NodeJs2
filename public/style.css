@@ -1,3 +1,9 @@
+:root {
+  --main-green: rgb(4, 105, 4);
+  --main-transp-green: #0eea0782;
+  --main-border-radius: 5px;
+}
+
 html, body {
   margin: 0;
   padding: 0;
