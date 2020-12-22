@@ -1,9 +1,7 @@
 var socket;
 var playerSessions;
 var legalCardsCopy = [];
-var chartData = [];
-var chartOptions;
-var chart;
+var myLineChart;
 
 google.charts.load('current', { packages: ['corechart', 'line'] });
 
@@ -136,24 +134,9 @@ function joinWithSessionCallback(player) {
 function startGame() {
     //var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
     //if (res === "eper") {
-        //var val = $("#game-types :selected").val();
-        //socket.emit('startGame', val);
+        var val = $("#game-types :selected").val();
+        socket.emit('startGame', val);
     //}    
-
-    chartData.addRow(
-        [0, 0, 0]
-    );
-
-
-    var chartPanel = document.getElementById('chart-container');
-    chartPanel.removeChild();
-
-    //Add chart
-    chartPanel.add(chart)
-    //chart.remove();
-
-    chart.draw(chartData, chartOptions);
-
 }
 
 function startGameCallback(players) {
@@ -412,33 +395,72 @@ function createLobbyPlayer(player) {
 
 function showChart() {
 
-    chartData = new google.visualization.DataTable();
-    chartData.addColumn('number', 'X');
-    chartData.addColumn('number', 'Dogs');
-    chartData.addColumn('number', 'Cats');
+    var ctx = document.getElementById('pointChartCanvas');
 
-    chartData.addRows([
-        [0, 0, 0], [1, 10, 5], [2, 23, 15]
-    ]);
+    var data = [{
+        x: 10,
+        y: 20
+    }, {
+        x: 15,
+        y: 10
+    }]
 
-    chartOptions = {
-        //hAxis: {
-        //    title: 'Time'
-        //},
-        //vAxis: {
-        //    title: 'Popularity'
-        //},
-        colors: ['#a52714', '#097138'],
-        crosshair: {
-            color: '#000',
-            trigger: 'selection'
+    var options;
+
+    myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+            datasets: [{
+                label: 'Máté',
+                borderColor: "red",
+                data: [
+                    1, 2, 3, 4, 5, 6
+                ],
+                fill: false,
+            }, {
+                label: 'Sanyi',
+                fill: false,
+                borderColor: "blue",
+                data: [
+                    3, 4, 5, 6, 7, 8
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Chart.js Line Chart'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                x: {
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                },
+                y: {
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }
+            }
         }
-    };
 
-    chartOptions.chartArea = { left: '5%', width: '80%', height: '70%' };
-
-    chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-
-    chart.draw(chartData, chartOptions);
+    });
 
 }
