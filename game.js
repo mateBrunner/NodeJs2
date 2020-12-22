@@ -12,6 +12,7 @@ var tableCards = [];
 var dealer;
 var trump;
 var lastHitSessionId;
+var lastHitCard;
 var playingSessionId;
 var cardnumber;
 
@@ -177,7 +178,13 @@ function endTurn() {
     players.find(p => p.sessionId === lastHitSessionId).hits += 1;
     tableCards = [];
     turn += 1;
-    return players;
+
+    var result = {
+        players: players,
+        lastHitCard: lastHitCard,
+    }
+
+    return result;
 }
 
 function getNewCardData() {
@@ -230,15 +237,13 @@ function playCard(card) {
 }
 
 function getLastHitSessionId() {
-    //tableCards = [{ color: "D", value: 5, sessionId: 1 }, { color: "D", value: 5, sessionId: 2 }]
-
     var erosek = tableCards.filter(c => c.color === trump.color);
     if (erosek.length === 0)
         erosek = tableCards.filter(c => c.color === tableCards[0].color);
 
-    maxCard = erosek.reduce((p, c) => p.value > c.value ? p : c);
+    lastHitCard = erosek.reduce((p, c) => p.value > c.value ? p : c);
 
-    return maxCard.sessionId;
+    return lastHitCard.sessionId;
 }
 
 function quit() {

@@ -1,17 +1,28 @@
-<div class="full-div green-shadow">
-    <div class="left-side">
-        <div class="img-container">
-            <img src="images/cards.gif" class="hidden">
+<div class="extra-full-div">
+    <div class="last-hit-card-div">
+        <game-card class="card hidden"></game-card>
+    </div>
+    <div class="full-div green-shadow">
+        <div class="left-side">
+            <div class="img-container">
+                <img src="images/cards.gif" class="hidden">
+            </div>
+            <p class="hits"></p>
         </div>
-        <p class="hits"></p>
-    </div>
-    <div class="right-side">
-        <p class="name-p"></p>
-        <p class="point-p"></p>
-    </div>
-</div> 
+        <div class="right-side">
+            <p class="name-p"></p>
+            <p class="point-p"></p>
+        </div>
+    </div> 
+</div>
+
 
 <style>
+
+    .extra-full-div {
+        display: flex;
+        flex-direction: row;
+    }
 
     .green-shadow {
         box-shadow: 0px 0px 2px 2px rgb(4, 105, 4);
@@ -25,6 +36,12 @@
         margin-bottom: 20px;
         display: flex;
         flex-direction: row;
+    }
+
+    .last-hit-card-div {
+        width: 52px;
+        position: relative;
+        bottom: 15px;
     }
 
     .left-side {

@@ -166,10 +166,15 @@ function endRoundCallback(players) {
     });
 }
 
-function endTurnCallback(players) {
-    players.forEach(p => {
+function endTurnCallback(result) {
+    result.players.forEach(p => {
         $("#player_" + p.sessionId).attr("hits", "" + p.hits + " / " + p.licit);
+        $("#player_" + p.sessionId).attr("is-loading", "false");
+        $("#player_" + p.sessionId).attr("is-card-visible", "false");
     })
+    $("#player_" + result.lastHitCard.sessionId).attr("is-card-visible", "true");
+    $("#player_" + result.lastHitCard.sessionId).attr("card-props", result.lastHitCard.color + "_" + result.lastHitCard.value);
+
     $("#tableCards").empty();
 }
 
@@ -336,7 +341,9 @@ function showTrumpAndPlayerCards(data) {
 
 function showHitsAndDealer(players, dealerSessionId) {
     players.forEach(p => {
-        $("#player_" + dealerSessionId).attr("hits", "");
+        $("#player_" + p.sessionId).attr("hits", "");
+        $("#player_" + p.sessionId).attr("is-dealer", "false");
+        $("#player_" + p.sessionId).attr("is-card-visible", "false");
     })
 
     $("#player_" + dealerSessionId).attr("is-dealer", "true");
