@@ -1,6 +1,11 @@
 var socket;
 var playerSessions;
 var legalCardsCopy = [];
+var chartData = [];
+var chartOptions;
+var chart;
+
+google.charts.load('current', { packages: ['corechart', 'line'] });
 
 function myOnLoad() {
     socket = io();
@@ -58,6 +63,8 @@ function checkSessionCallback(result) {
 function showLobby() {
     $("#lobbyDiv").removeClass("hidden-div");
     $("#boardDiv").addClass("hidden-div");
+
+    showChart();
 }
 
 function getLobbyInfoCallback(players) {
@@ -129,9 +136,24 @@ function joinWithSessionCallback(player) {
 function startGame() {
     //var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
     //if (res === "eper") {
-        var val = $("#game-types :selected").val();
-        socket.emit('startGame', val);
+        //var val = $("#game-types :selected").val();
+        //socket.emit('startGame', val);
     //}    
+
+    chartData.addRow(
+        [0, 0, 0]
+    );
+
+
+    var chartPanel = document.getElementById('chart-container');
+    chartPanel.removeChild();
+
+    //Add chart
+    chartPanel.add(chart)
+    //chart.remove();
+
+    chart.draw(chartData, chartOptions);
+
 }
 
 function startGameCallback(players) {
@@ -386,4 +408,37 @@ function createLobbyPlayer(player) {
     div.appendChild(p);
 
     return div;
+}
+
+function showChart() {
+
+    chartData = new google.visualization.DataTable();
+    chartData.addColumn('number', 'X');
+    chartData.addColumn('number', 'Dogs');
+    chartData.addColumn('number', 'Cats');
+
+    chartData.addRows([
+        [0, 0, 0], [1, 10, 5], [2, 23, 15]
+    ]);
+
+    chartOptions = {
+        //hAxis: {
+        //    title: 'Time'
+        //},
+        //vAxis: {
+        //    title: 'Popularity'
+        //},
+        colors: ['#a52714', '#097138'],
+        crosshair: {
+            color: '#000',
+            trigger: 'selection'
+        }
+    };
+
+    chartOptions.chartArea = { left: '5%', width: '80%', height: '70%' };
+
+    chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+    chart.draw(chartData, chartOptions);
+
 }
