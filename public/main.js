@@ -81,7 +81,7 @@ function getBoardInfoCallback(data) {
 
     showPlayerList(data.players);
 
-    playerSessions = data.players.map(p => p.sessionId);
+    playerSessions = data.players.map(p => { sessionId: p.sessionId; name: p.name });
 
     showTableCardsCallback(data.tableCards);
 
@@ -150,7 +150,8 @@ function startGameCallback(data) {
         return;
     }
 
-    playerSessions = data.players.map(p => p.sessionId);
+    playerSessions = [];
+    data.players.forEach(p => playerSessions[p.sessionId] = p.name)
 
     showBoard();
 
@@ -160,6 +161,8 @@ function startGameCallback(data) {
 }
 
 function startRoundCallback(data) {
+
+    console.log(data);
 
     $("#round-counter").html(data.round + ". kör / " + data.turns + " lap");
 
@@ -224,8 +227,17 @@ function someoneLicitedCallback(sessionId) {
     $("#player_" + sessionId).attr("is-loading", "false");
 }
 
-function licitEndCallback(licits) {
-    licits.forEach(p => {
+function licitEndCallback(data) {
+    var sessionId = window.localStorage.getItem("sessionId");
+
+    if (data.players != null) {
+        $("#cardList").empty();
+        data.players.find(p => p.sessionId === sessionId).cards.forEach(c =>
+            $("#cardList").append(createCard(c, true, null)));
+    }
+
+
+    data.licits.forEach(p => {
         $("#player_" + p.sessionId).attr("hits", "0 / " + p.licit);
     })
 }
@@ -352,11 +364,19 @@ function showTrumpAndPlayerCards(data) {
     if (sessionId === null)
         return;
 
-    //kártyák és adu mutatása
-    var cards = data.players.find(p => p["sessionId"] == sessionId).cards;
+    var cards = [];
+
+    if (data.turns != 1)
+        cards = data.players.find(p => p["sessionId"] == sessionId).cards;
+    else
+        data.players.filter(p => p["sessionId"] != sessionId).forEach(p => cards.push(p.cards[0]));
+
     $("#cardList").empty();
     cards.forEach(c => {
-        $("#cardList").append(createCard(c, true, null));
+        if (data.turns == 1)
+            $("#cardList").append(createCard(c, true, playerSessions[c.sessionId]));
+        else
+            $("#cardList").append(createCard(c, true, null ));
     })
 }
 
@@ -365,12 +385,14 @@ function showHitsAndDealer(players, dealerSessionId) {
         $("#player_" + p.sessionId).attr("hits", "");
         $("#player_" + p.sessionId).attr("is-dealer", "false");
         $("#player_" + p.sessionId).attr("is-card-visible", "false");
+        $("#player_" + p.sessionId).attr("is-loading", "true");
     })
 
     $("#player_" + dealerSessionId).attr("is-dealer", "true");
 }
 
 function createCard(card, isPlayerCard, text) {
+
     var dom = document.createElement("game-card");
     dom.id = card.id;
     dom.setAttribute("color", card.color);

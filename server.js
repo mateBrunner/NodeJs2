@@ -67,10 +67,10 @@ function startGame(gameType) {
 }
 
 function licit(data) {
-    var licits = game.saveLicit(data);
+    var result = game.saveLicit(data);
     io.to(basicRoom).emit('someoneLicited', data.sessionId);
-    if (licits != null) {
-        io.to(basicRoom).emit('licitEnd', licits);
+    if (result != null) {
+        io.to(basicRoom).emit('licitEnd', result);
         var data = game.getNewCardData();
         io.to(basicRoom).emit('newCard', data);
     }    

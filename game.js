@@ -159,6 +159,7 @@ function startNextRound() {
     var shuffledCards = helper.getShuffledCards(players.length, cardToDraw);
     for (let i = 0; i < players.length; i++) {
         players[i]["cards"] = shuffledCards.slice(i * cardToDraw, (i + 1) * cardToDraw);
+        players[i].cards.forEach(c => c.sessionId = players[i].sessionId);
         players[i].hits = 0;
         players[i].licit = 0;
         helper.orderCards(players[i]["cards"]);
@@ -182,7 +183,22 @@ function saveLicit(data) {
         players.find(p => p.sessionId === data.sessionId).licit = data.licit;
     }
     if (licits.length === players.length) {
-        return licits;
+
+        var playersWithCards = null;
+        if (turn === 1) {
+            playersWithCards = [];
+            players.forEach(p => playersWithCards.push({
+                sessionId: p.sessionId,
+                cards: p.cards
+            }));
+        }
+        
+        var result = {
+            licits: licits,
+            players: playersWithCards
+        }
+
+        return result;
     } else
         return null;
 }
