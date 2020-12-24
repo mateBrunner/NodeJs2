@@ -13,7 +13,7 @@ class GameCard extends HTMLElement {
         this.shadowRoot.appendChild(gameCardTemplate.content.cloneNode(true));
     }
 
-    static get observedAttributes() { return ["color", "value", "card-info", "status", "is-legal"]; }
+    static get observedAttributes() { return ["color", "value", "card-info", "status", "is-legal", "size"]; }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color")
@@ -23,7 +23,7 @@ class GameCard extends HTMLElement {
         else if (name === "card-info")
             this.shadowRoot.querySelector(".card-info").innerHTML = newValue;
         else if (name === "status")
-            if (newValue != null) {
+            if (newValue === "legal" || newValue === "illegal" || newValue === "player-card") {
                 var div = this.shadowRoot.querySelector(".full-div");
                 div.classList.add("player-card");
                 if (newValue === "legal")
@@ -35,6 +35,11 @@ class GameCard extends HTMLElement {
                     div.classList.remove("illegal");
                 }
             } 
+            else if (newValue === "small") {
+                console.log("szióka");
+                var div = this.shadowRoot.querySelector(".full-div");
+                div.classList.add("small");
+            }                
 
     }
 

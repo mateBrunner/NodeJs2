@@ -9,12 +9,16 @@
 <style>
     
     .full-div {
-        width: 40px;
+        width: 56px;
         margin-right: 12px;
     }
 
     .full-div.player-card {
         width: 66px;
+    }
+
+    .full-div.small {
+        width: 40px;;
     }
 
     .card-info {
@@ -30,13 +34,12 @@
     .card-div {
         display: flex;
         flex-direction: column;
-        height: 60px;
+        height: 85px;
         width: inherit;
         border-radius: 6px;
         background-color: #dcdcdc;
         position: relative;
         overflow: hidden;
-        background-image: url('images/card-background.png');
     }
 
     .card-div:after {
@@ -45,7 +48,7 @@
         z-index: 10;
         width: 200%;
         height: 100%;
-        top: -45px;
+        top: -68px;
         left: -10px;
         opacity: 0.4;
         transform: rotate(45deg);
@@ -63,6 +66,14 @@
         top: -75px;
     }
 
+    .small .card-div {
+        height: 60px;
+    }
+
+    .small .card-div:after {
+        top: -45px;
+    }
+
     .card-info {
         background-color: transparent;
     }
@@ -77,13 +88,17 @@
 
     .card-value {
         margin: auto;
-        font-size: 140%;
+        font-size: 180%;
         user-select: none;
         font-weight: bold;
     }
 
     .player-card .card-value {
         font-size: 36px !important;
+    }
+
+    .small .card-value {
+        font-size: 140%;
     }
 
     .card-text {

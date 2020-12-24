@@ -47,6 +47,7 @@ class PlayerBox extends HTMLElement {
         else if (name === "card-props") {
             this.shadowRoot.querySelector(".card").setAttribute("color", newValue.split("_")[0])
             this.shadowRoot.querySelector(".card").setAttribute("value", newValue.split("_")[1])
+            this.shadowRoot.querySelector(".card").setAttribute("status", "small")
         }
 
 

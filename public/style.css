@@ -1,6 +1,6 @@
 :root {
-  --main-green: rgb(4, 105, 4);
-  --main-transp-green: #0eea0782;
+  --main-green: hsl(120, 93%, 21%);
+  --main-transp-white: #ffffff9c;
   --main-border-radius: 5px;
 }
 
@@ -15,7 +15,7 @@ canvas {
 }
 
 body {
-    background-image: url('images/background5.jpeg');
+    background-image: url('images/green-back.jpg');
     background-repeat: repeat;
     background-size: auto;
     height: 100vh;

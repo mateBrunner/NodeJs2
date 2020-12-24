@@ -250,7 +250,7 @@ function showTableCardsCallback(tableCards) {
 }
 
 function newCardCallback(data) {
-    $("#notification").html("<span style='color: #ffbc00; font-weight: bold;'>" + data.name + "</span> lapot játszik ki");
+    $("#notification").html("<span style='color: #1a6700; font-weight: bold;'>" + data.name + "</span> lapot játszik ki");
 
     $("#player_" + data.sessionId).attr("is-loading", "true");
     $("#player_" + data.lastCardSessionId).attr("is-loading", "false");
