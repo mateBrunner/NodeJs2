@@ -86,12 +86,14 @@ function playCard(data) {
                 io.to(basicRoom).emit('endTurn', game.endTurn())
 
                 if (game.isRoundEnded()) {
-                    io.to(basicRoom).emit('endRound', game.endRound());
+                    setTimeout(function() {
+                        io.to(basicRoom).emit('endRound', game.endRound());
 
-                    if (game.isGameEnded())
-                        io.to(basicRoom).emit('endGame');
-                    else 
-                        io.to(basicRoom).emit('startRound', game.startNextRound())
+                        if (game.isGameEnded())
+                            io.to(basicRoom).emit('endGame');
+                        else 
+                            io.to(basicRoom).emit('startRound', game.startNextRound())
+                    }, 2000)
                     
                 } else {
                     var newData = game.getNewCardData();
@@ -99,7 +101,7 @@ function playCard(data) {
                 }             
                 
 
-            }, 1800);
+            }, 2500);
         } else {
             var newData = game.getNewCardData();
             io.to(basicRoom).emit('newCard', newData);
