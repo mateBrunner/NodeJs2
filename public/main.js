@@ -23,10 +23,20 @@ function myOnLoad() {
     socket.on('quit', quitCallback)
     socket.on('getLobbyInfo', getLobbyInfoCallback)
     socket.on('getBoardInfo', getBoardInfoCallback)
+    socket.on('loadGame', loadGameCallback)
+    socket.on('chatMessage', chatMessageCallback)
 
     socket.on("connect", () => {
         checkSession();
     });
+
+    $('#chatInput').keypress(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            sendText();
+        }
+    });
+
 }
 
 function checkSession() {
@@ -39,10 +49,10 @@ function checkSession() {
 }
 
 function checkSessionCallback(result) {
-    if (result.sessionId === null)  // ez a sessionId nincs játékban, töröljük a storage-ból
-        window.localStorage.removeItem('sessionId');
-    else
-        window.localStorage.setItem('sessionId', result.sessionId);
+    // if (result.sessionId === null)  // ez a sessionId nincs játékban, töröljük a storage-ból
+    //     window.localStorage.removeItem('sessionId');
+    // else
+    //     window.localStorage.setItem('sessionId', result.sessionId);
 
     var data = {
         sessionId: window.localStorage.getItem('sessionId'),
@@ -118,7 +128,7 @@ function join() {
 
     if (window.localStorage.getItem('sessionId') === null)
         socket.emit('join', data);
-    else 
+    else
         $("#joinErrorMsg").text("Te már beléptél, nyughass!")
 }
 
@@ -173,15 +183,18 @@ function startRoundCallback(data) {
     showHitsAndDealer(data.players, data.dealerSessionId);
 }
 
-function endRoundCallback(players) {
-    players.forEach(p => {
+function endRoundCallback(data) {
+
+    data.players.forEach(p => {
         $("#player_" + p.sessionId).attr("points", p.points);
         $("#player_" + p.sessionId).attr("dealer", "false");
     });
 
-    for (let i = 0; i < players.length; i++) {
-        myLineChart.data.datasets[i].data.push(players[i].points);
+    for (let i = 0; i < data.players.length; i++) {
+        myLineChart.data.datasets[i].data.push(data.players[i].points);
     }
+
+    window.localStorage.setItem('savedGame', JSON.stringify(data));
 
     myLineChart.update();
 
@@ -324,6 +337,42 @@ function quit() {
 function quitCallback() {
     window.localStorage.removeItem('sessionId');
     location.reload();
+}
+
+function loadGame() {
+    if (window.localStorage.getItem('savedGame') === null)
+        return;
+    else
+        socket.emit('loadGame', JSON.parse(window.localStorage.getItem('savedGame')));
+}
+
+function loadGameCallback() {
+    location.reload();
+}
+
+function deleteMyself() {
+    window.localStorage.removeItem('sessionId');
+}
+
+function sendText() {
+    var message = $("#chatInput").val();
+    if (message === "")
+        return;
+
+    $("#chatInput").val("");
+    var data = {
+        sessionId: window.localStorage.getItem('sessionId'),
+        message: message
+    }
+    socket.emit("chatMessage", data)
+}
+
+function chatMessageCallback(result) {
+    $("#chatMessage").removeClass("hidden-div");
+    $("#chatMessage").text(result.sender + ": " + result.message);
+    setTimeout(function() {
+        $("#chatMessage").addClass("hidden-div");
+    }, 5000)
 }
 
 function showPlayerList(players) {

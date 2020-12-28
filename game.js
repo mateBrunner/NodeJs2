@@ -49,8 +49,8 @@ function checkSession(data) {
         return res;   
     }
     else {
-        var socket = sockets.find(s => s.sessionId === data.sessionId)
-        socket.socketId = data.socketId;
+        //var socket = sockets.find(s => s.sessionId === data.sessionId)
+        //socket.socketId = data.socketId;
     }
 
     res.sessionId = data.sessionId;
@@ -144,12 +144,20 @@ function endRound() {
     });
     pointHistory.push(newPoints);
 
-    return players;
+    var data = {
+        players: players,
+        round: round,
+        dealer: dealer,
+        cardnumber: cardnumber,
+        pointHistory: pointHistory,
+        nextPlayerDict: nextPlayerDict
+    }
+
+    return data;
 }
 
 function startNextRound() {
     round += 1;
-    //TODO: mozgatni a dealert
     turn = 1;
     dealer = players[round % players.length];
     licits = [];
@@ -286,6 +294,30 @@ function quit() {
     sockets = [];
 }
 
+function loadGame(data) {
+    gameStatus = helper.GAMESTATUS.GAME;
+    players = data.players;
+    round = data.round;
+    licits = [];
+    cardnumber = data.cardnumber;
+    dealer = data.dealer;
+    nextPlayerDict = data.nextPlayerDict;
+    pointHistory = data.pointHistory;
+    players.forEach(p => {
+        p.licit = null;
+        p.hits = 0;
+    })
+    startNextRound();
+}
+
+function getNameBySessionId(sessionId) {
+    var player = players.find(p => p.sessionId === sessionId);
+    if (player === undefined)
+        return "Valaki";
+    else
+        return player.name;
+}
+
 module.exports = { 
     joinPlayer, 
     checkSession, 
@@ -302,5 +334,7 @@ module.exports = {
     playCard,
     gameStatus,
     isGameEnded,
-    quit
+    getNameBySessionId,
+    quit,
+    loadGame
 };

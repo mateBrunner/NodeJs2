@@ -28,6 +28,8 @@ function newConnection(socket) {
     socket.on('playCard', playCard);
     socket.on('getNewCardData', getNewCardData);
     socket.on('quit', quit);
+    socket.on('loadGame', loadGame);
+    socket.on('chatMessage', chatMessage);
 }
 
 function join(data) {
@@ -119,4 +121,17 @@ function getNewCardData(socketId) {
 function quit() {
     game.quit();
     io.to(basicRoom).emit('quit');
+}
+
+function loadGame(data) {
+    game.loadGame(data);
+    io.to(basicRoom).emit('loadGame');
+}
+
+function chatMessage(data) {
+    var res = {
+        message: data.message,
+        sender: game.getNameBySessionId(data.sessionId)
+    }
+    io.to(basicRoom).emit('chatMessage', res);
 }

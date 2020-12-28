@@ -14,10 +14,9 @@
 
 <body onload="myOnLoad()">
     <div w3-include-html id="lobbyDiv">
-
         <h2 class="title">RIKIKI</h2>
         <div class="input-container">
-            <input type="text" id="newPlayerName" class="new-player-input">
+            <input type="text" id="newPlayerName" class="input-primary">
             <button class="button-primary join-btn" onclick="join()">Belépés</button>
             <p id="joinErrorMsg"></p>
         </div>
@@ -25,6 +24,7 @@
             <h4 class="joined-players-title">Belépett játékosok</h4>
             <div id="joinedPlayers" class="joined-players-body"></div>
         </div>
+        <button class="button-primary deleteMyselfBtn" onclick="deleteMyself()">Törlöm magam</button>
 
         <div id="start-button-div">
             <select name="game-types-select" id="game-types">
@@ -34,7 +34,11 @@
                 <option value="UP_AND_DOWN_10">1 -> 10 -> 1</option>
                 <option value="UP_AND_DOWN_13">1 -> 13 -> 1</option>
             </select>
+            <button class="startBtn" onclick="loadGame()">Folytatás</button>
             <button class="startBtn" onclick="startGame()">Start</button>
+        </div>
+        <div id="alert">
+            Ha nem tudsz belépni, először töröld magad (akkor is, ha nem látod magad a listában)! Ha menetközben meghal a játék, akkor NE! Akkor valaki megnyomja a folytatást, és mehet tovább!
         </div>
 
     </div>
@@ -56,7 +60,10 @@
                         </div>
                     </div>
                 </div>
-                               
+
+                <div id="chatMessageContainer">
+                    <div id="chatMessage" class="hidden green-shadow hidden-div">asdfalésddfkj</div>    
+                </div>                           
 
                 <div class="table-div">
                     <div id="trump" class="trump-card"></div>
@@ -81,6 +88,12 @@
                     </div>
 
                     <div id="tableCards" class="card-container table-cards"></div>
+                </div>
+
+                <div id="chatDiv">
+                    <p id="chatLabel">Chat:</p>
+                    <input type="text" id="chatInput" class="input-primary">
+                    <button class="button-primary" style="margin-left: 12px;" onclick="sendText()">Küldés</button>
                 </div>
 
                 <div id="cardList" class="card-container player-cards"></div>
@@ -110,8 +123,8 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 18px;
-            padding: 8px 14px;
+            font-size: 16px;
+            padding: 8px 12px;
         }
 
         .button-primary:hover {
@@ -119,9 +132,21 @@
             cursor: pointer;
         }
 
+        .input-primary {
+            border-radius: var(--main-border-radius);
+            height: 26px;
+            font-size: 20px;
+        }
+
     /*#endregion GENERAL*/
 
     /*#region LOBBY*/
+
+        #alert {
+            margin: 16px 0px;
+            font-size: 14px;
+            color: red;
+        }
 
         .join-btn {
             width: 100px;
@@ -140,7 +165,7 @@
             margin: 0px auto;
             border-radius: 15px;
             box-shadow: 4px 4px 5px 5px rgba(0, 0, 0, 0.56);
-            height: 400px;
+            height: 500px;
             width: 400px;
             position: relative;
             top: 40px;
@@ -159,12 +184,6 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-        }
-
-        .new-player-input {
-            border-radius: var(--main-border-radius);
-            height: 26px;
-            font-size: 20px;
         }
 
         #joinBtn {
@@ -222,6 +241,7 @@
         }
 
         #start-button-div {
+            margin-top: 10px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -232,17 +252,22 @@
             border: none;
             border-radius: var(--main-border-radius);
             color: white;
-            padding: 12px 32px;
+            padding: 12px 0px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
             height: 40px;
-            width: 200px;
+            width: 120px;
         }
 
         .startBtn:hover, .startBtn:active {
             background-color: #0a4808
+        }
+
+        .deleteMyselfBtn {
+            width: 120px;
+            padding: 12px 0px !important;
         }
 
     /*#endregion LOBBY*/
@@ -288,7 +313,7 @@
         }
 
         .table-div {
-            height: 310px;
+            height: 250px;
             width: 645px;
             display: flex;
             flex-direction: row;
@@ -319,6 +344,7 @@
             box-shadow: 0px 0px 10px 2px #a7a7a7;
             flex-wrap: wrap;
             width: 780px;
+            min-height: 120px;
         }
 
         .card-container.player-cards.active {
@@ -341,7 +367,7 @@
         #licitDiv {
             margin-top: auto;
             margin-bottom: auto;
-            width: 340px;
+            width: 380px;
         }
 
         #licit-numbers-container {
@@ -423,6 +449,40 @@
             display: none ; 
             height: 300px;
             width: 700px;
+        }
+
+        #chatMessageContainer {
+            min-height: 50px;
+            padding: 0px;
+            margin-left: 30px;
+        }
+
+        #chatMessage {
+            width: 600px;
+            background: #ffffff00;
+            padding: 14px 10px 4px 10px;
+            border-radius: 5px;
+            min-height: 30px;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+            flex-wrap: wrap;
+        }
+
+        #chatLabel {
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            height: 20px;
+            margin: 0px 10px;
+            padding-top: 4px;
+        }
+
+        #chatDiv {
+            display: flex;
+            float: right;
+            margin-bottom: 10px;
+            margin-right: 24px;
         }
 
     /*#endregion BOARD*/
