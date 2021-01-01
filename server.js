@@ -92,7 +92,7 @@ function playCard(data) {
                         io.to(basicRoom).emit('endRound', game.endRound());
 
                         if (game.isGameEnded())
-                            io.to(basicRoom).emit('endGame');
+                            io.to(basicRoom).emit('endGame', game.getPlayers());
                         else 
                             io.to(basicRoom).emit('startRound', game.startNextRound())
                     }, 2000)

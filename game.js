@@ -38,6 +38,10 @@ function joinPlayer(data) {
     return player
 }
 
+function getPlayers() {
+    return players;
+}
+
 function checkSession(data) {
     var res = {
         sessionId: null,
@@ -320,6 +324,7 @@ function getNameBySessionId(sessionId) {
 
 module.exports = { 
     joinPlayer, 
+    getPlayers,
     checkSession, 
     getLobbyInfo,
     getBoardInfo,

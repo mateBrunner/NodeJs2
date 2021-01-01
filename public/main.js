@@ -20,6 +20,7 @@ function myOnLoad() {
     socket.on('licitEnd', licitEndCallback)    
     socket.on('showTableCards', showTableCardsCallback)
     socket.on('newCard', newCardCallback)
+    socket.on('endGame', endGameCallback)
     socket.on('quit', quitCallback)
     socket.on('getLobbyInfo', getLobbyInfoCallback)
     socket.on('getBoardInfo', getBoardInfoCallback)
@@ -327,6 +328,44 @@ function playCard(card) {
     });
     
 }
+
+function endGameCallback(players) {
+
+    $("#end-game-modal").removeClass("hidden-div");
+
+    players.sort((a, b) => (a.points < b.points) ? 1 : -1)
+
+    var list = document.getElementById("ranking-list");
+    
+    for (let i = 0; i < players.length; i++) {
+
+        var li = document.createElement("li");
+        li.classList.add("end-game-list-element");
+
+        var rank = document.createElement("p");
+        rank.classList.add("ranking-rank");
+        rank.classList.add("ranking-text");
+        rank.innerHTML = i + 1 + ".";
+        li.appendChild(rank);
+
+        var name = document.createElement("p");
+        name.classList.add("ranking-name");
+        name.classList.add("ranking-text");
+        name.innerHTML = players[i].name;
+        li.appendChild(name);
+
+        var points = document.createElement("p");
+        points.classList.add("ranking-points");
+        points.classList.add("ranking-text");
+        points.innerHTML = players[i].points;
+        li.appendChild(points);
+
+        list.appendChild(li)
+
+    }
+
+}
+
 
 function quit() {
     var res = window.prompt("Kilépés", "Nem úgy van az! Add meg a jelszót!");
