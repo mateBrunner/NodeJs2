@@ -92,7 +92,8 @@ function getBoardInfoCallback(data) {
 
     showPlayerList(data.players);
 
-    playerSessions = data.players.map(p => { sessionId: p.sessionId; name: p.name });
+    playerSessions = [];
+    data.players.forEach(p => playerSessions[p.sessionId] = p.name)
 
     showTableCardsCallback(data.tableCards);
 
@@ -520,8 +521,6 @@ function createLobbyPlayer(player) {
 }
 
 function createChart(data) {
-
-    console.log(data);
 
     var ctx = document.getElementById('pointChartCanvas');
 
